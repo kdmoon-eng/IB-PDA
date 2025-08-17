@@ -714,35 +714,43 @@
             elements.productInfo.innerHTML = `
                 <div class="result-item">
                     <span class="result-label">입고번호:</span>
-                    <span class="result-value">${item['입고번호']}</span>
+                    <span class="result-value">${item['입고번호'] || '-'}</span>
                 </div>
                 <div class="result-item">
                     <span class="result-label">고객사:</span>
-                    <span class="result-value">${item['고객사']}</span>
+                    <span class="result-value">${item['고객사'] || '-'}</span>
                 </div>
                 <div class="result-item">
                     <span class="result-label">품명:</span>
-                    <span class="result-value">${item['품명']}</span>
+                    <span class="result-value">${item['품명'] || '-'}</span>
                 </div>
                 <div class="result-item">
                     <span class="result-label">바코드:</span>
-                    <span class="result-value">${item['바코드']}</span>
+                    <span class="result-value">${item['바코드'] || '-'}</span>
                 </div>
                 <div class="result-item">
                     <span class="result-label">예정수량:</span>
-                    <span class="result-value" style="color: #2563eb; font-weight: 600;">${item['수량']}개</span>
+                    <span class="result-value" style="color: #2563eb; font-weight: 600;">${item['수량'] || '0'}개</span>
                 </div>
                 <div class="result-item">
                     <span class="result-label">소비기한:</span>
-                    <span class="result-value">${item['소비기한']}</span>
+                    <span class="result-value">${item['소비기한'] || '-'}</span>
                 </div>
                 <div class="result-item">
                     <span class="result-label">제조로트:</span>
-                    <span class="result-value">${item['제조로트']}</span>
+                    <span class="result-value">${item['제조로트'] || '-'}</span>
                 </div>
                 <div class="result-item">
                     <span class="result-label">PLT.NO:</span>
-                    <span class="result-value">${item['PLT.NO']}</span>
+                    <span class="result-value">${item['PLT.NO'] || '-'}</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">특이사항:</span>
+                    <span class="result-value">${item['특이사항'] || '-'}</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">현재 적치 로케이션:</span>
+                    <span class="result-value">${item['적치 로케이션'] || '-'}</span>
                 </div>
             `;
             

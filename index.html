@@ -15,6 +15,7 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background-color: #f5f5f5;
             line-height: 1.6;
+            user-select: none;
         }
         
         .container {
@@ -92,6 +93,48 @@
             display: block;
         }
         
+        .scan-area {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            border-radius: 12px;
+            padding: 30px 20px;
+            text-align: center;
+            color: white;
+            margin-bottom: 20px;
+            position: relative;
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .scan-area.scanning {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .scan-area .scan-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+            display: block;
+        }
+        
+        .scan-area .scan-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .scan-area .scan-subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
         .input-group {
             margin-bottom: 15px;
         }
@@ -115,6 +158,21 @@
         .input-group input:focus {
             outline: none;
             border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+        
+        .scan-input {
+            background: #f8fafc !important;
+            border: 3px solid #059669 !important;
+            font-size: 18px !important;
+            font-weight: 600 !important;
+            text-align: center !important;
+            color: #047857 !important;
+        }
+        
+        .scan-input:focus {
+            border-color: #dc2626 !important;
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1) !important;
         }
         
         .btn {
@@ -238,47 +296,43 @@
             display: none !important;
         }
         
-        .camera-area {
-            background: #111827;
-            border-radius: 8px;
-            height: 200px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            margin-bottom: 15px;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .camera-area video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        
-        .camera-controls {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-        
         .text-center {
             text-align: center;
         }
         
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 2px solid #ffffff40;
-            border-radius: 50%;
-            border-top-color: #ffffff;
-            animation: spin 1s ease-in-out infinite;
+        .status-indicator {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
         }
         
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        .status-ready {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        
+        .status-scanning {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        
+        .scanner-instructions {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 15px;
+            font-size: 13px;
+            color: #92400e;
+        }
+        
+        .scanner-instructions .icon {
+            font-size: 16px;
+            margin-right: 5px;
         }
     </style>
 </head>
@@ -298,30 +352,38 @@
                 <h3 style="margin-bottom: 15px;">스캔 모드 선택</h3>
                 <div class="mode-selector">
                     <div class="mode-btn active" data-mode="barcode">
-                        <span class="icon">📊</span>
+                        <span class="icon">🏷️</span>
                         바코드 스캔
                     </div>
                     <div class="mode-btn" data-mode="receipt">
-                        <span class="icon">📦</span>
+                        <span class="icon">📋</span>
                         입고번호 스캔
                     </div>
                 </div>
                 
-                <!-- 카메라 영역 -->
-                <div class="card">
-                    <h4 style="margin-bottom: 15px;" id="scanTitle">바코드 스캔</h4>
-                    <div class="camera-area" id="cameraArea">
-                        <p>카메라 준비 중...</p>
-                    </div>
-                    <button class="btn btn-primary" id="cameraBtn">
-                        <span>📷</span>
-                        카메라 시작
-                    </button>
-                    <button class="btn btn-secondary" id="manualBtn">
-                        <span>⌨️</span>
-                        수동 입력
-                    </button>
+                <!-- 스캐너 안내 -->
+                <div class="scanner-instructions">
+                    <span class="icon">⚡</span>
+                    <strong>PDA 스캐너 사용법:</strong> 아래 입력창을 클릭하고 PDA 스캐너로 바코드/QR코드를 스캔하세요
                 </div>
+                
+                <!-- 스캐너 영역 -->
+                <div class="scan-area" id="scanArea">
+                    <div class="status-indicator status-ready" id="statusIndicator">준비</div>
+                    <span class="scan-icon" id="scanIcon">📱</span>
+                    <div class="scan-title" id="scanTitle">바코드 스캔 준비</div>
+                    <div class="scan-subtitle" id="scanSubtitle">아래 입력창을 클릭하고 스캐너로 스캔하세요</div>
+                </div>
+                
+                <!-- 스캔 입력창 -->
+                <div class="input-group">
+                    <input type="text" id="scanInput" class="scan-input" placeholder="여기를 클릭하고 PDA 스캐너로 스캔하세요" autocomplete="off">
+                </div>
+                
+                <button class="btn btn-secondary" id="manualBtn">
+                    <span>⌨️</span>
+                    수동 입력 모드
+                </button>
                 
                 <!-- 테스트 데이터 -->
                 <div class="sample-data">
@@ -331,7 +393,7 @@
                     </h4>
                     <div><strong>바코드:</strong> 8809826714335</div>
                     <div><strong>입고번호:</strong> DSIR-ES2-0811-105122-4257</div>
-                    <p style="margin-top: 10px; font-size: 12px; color: #6b7280;">위 값들로 테스트해보세요!</p>
+                    <p style="margin-top: 10px; font-size: 12px; color: #6b7280;">위 값들을 직접 입력하거나 QR코드로 만들어서 테스트해보세요!</p>
                 </div>
             </div>
             
@@ -347,7 +409,7 @@
                 </button>
                 <button class="btn btn-secondary" id="backBtn">
                     <span>←</span>
-                    돌아가기
+                    스캐너 모드로 돌아가기
                 </button>
             </div>
             
@@ -355,7 +417,7 @@
             <div class="card hidden" id="resultCard">
                 <div class="alert alert-success">
                     <span>✅</span>
-                    검색 완료
+                    스캔 완료
                 </div>
                 
                 <div class="result-card" id="productInfo">
@@ -446,7 +508,7 @@
         // 전역 변수
         let currentMode = 'barcode';
         let currentResult = null;
-        let videoStream = null;
+        let scanTimeout = null;
         
         // DOM 요소들
         const elements = {
@@ -455,10 +517,14 @@
             resultCard: document.getElementById('resultCard'),
             completeCard: document.getElementById('completeCard'),
             errorAlert: document.getElementById('errorAlert'),
+            scanArea: document.getElementById('scanArea'),
+            scanIcon: document.getElementById('scanIcon'),
             scanTitle: document.getElementById('scanTitle'),
+            scanSubtitle: document.getElementById('scanSubtitle'),
+            statusIndicator: document.getElementById('statusIndicator'),
+            scanInput: document.getElementById('scanInput'),
             manualTitle: document.getElementById('manualTitle'),
             manualInput: document.getElementById('manualInput'),
-            cameraArea: document.getElementById('cameraArea'),
             productInfo: document.getElementById('productInfo'),
             actualQuantity: document.getElementById('actualQuantity'),
             actualLocation: document.getElementById('actualLocation'),
@@ -469,6 +535,7 @@
         function init() {
             setupEventListeners();
             selectMode('barcode');
+            focusScanInput();
         }
         
         // 이벤트 리스너 설정
@@ -480,8 +547,34 @@
                 });
             });
             
+            // 스캔 입력창 이벤트
+            elements.scanInput.addEventListener('focus', function() {
+                setScanningState(true);
+            });
+            
+            elements.scanInput.addEventListener('blur', function() {
+                setScanningState(false);
+            });
+            
+            // 스캔 입력 처리 (PDA 스캐너는 보통 Enter로 끝남)
+            elements.scanInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    processScanInput();
+                }
+            });
+            
+            // 실시간 입력 감지 (일부 스캐너는 Enter 없이 입력)
+            elements.scanInput.addEventListener('input', function() {
+                clearTimeout(scanTimeout);
+                scanTimeout = setTimeout(() => {
+                    if (this.value.length >= 8) { // 최소 8자리 이상일 때 자동 처리
+                        processScanInput();
+                    }
+                }, 500); // 0.5초 후 자동 처리
+            });
+            
             // 각종 버튼들
-            document.getElementById('cameraBtn').addEventListener('click', startCamera);
             document.getElementById('manualBtn').addEventListener('click', showManualInput);
             document.getElementById('searchBtn').addEventListener('click', searchItem);
             document.getElementById('backBtn').addEventListener('click', backToScan);
@@ -489,7 +582,7 @@
             document.getElementById('newScanBtn').addEventListener('click', startNewScan);
             document.getElementById('newScanBtn2').addEventListener('click', startNewScan);
             
-            // Enter 키 이벤트
+            // 수동 입력 Enter 키
             elements.manualInput.addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
                     searchItem();
@@ -507,90 +600,81 @@
             });
             document.querySelector(`[data-mode="${mode}"]`).classList.add('active');
             
-            // 타이틀 업데이트
-            const title = mode === 'barcode' ? '바코드 스캔' : '입고번호 스캔';
+            // UI 업데이트
+            updateScanUI();
+            focusScanInput();
+        }
+        
+        // 스캔 UI 업데이트
+        function updateScanUI() {
+            const isBarcode = currentMode === 'barcode';
+            const title = isBarcode ? '바코드 스캔 준비' : '입고번호 스캔 준비';
+            const subtitle = isBarcode ? 'PDA 스캐너로 바코드를 스캔하세요' : 'PDA 스캐너로 입고번호 QR코드를 스캔하세요';
+            const placeholder = isBarcode ? 'PDA 스캐너로 바코드를 스캔하세요' : 'PDA 스캐너로 입고번호를 스캔하세요';
+            
             elements.scanTitle.textContent = title;
-            elements.manualTitle.textContent = `${mode === 'barcode' ? '바코드' : '입고번호'} 수동 입력`;
-            elements.manualInput.placeholder = `${mode === 'barcode' ? '바코드' : '입고번호'}를 입력하세요`;
+            elements.scanSubtitle.textContent = subtitle;
+            elements.scanInput.placeholder = placeholder;
+            elements.manualTitle.textContent = `${isBarcode ? '바코드' : '입고번호'} 수동 입력`;
+            elements.manualInput.placeholder = `${isBarcode ? '바코드' : '입고번호'}를 입력하세요`;
         }
         
-        // 카메라 시작
-        function startCamera() {
-            const cameraBtn = document.getElementById('cameraBtn');
-            cameraBtn.innerHTML = '<span class="loading"></span>카메라 시작 중...';
-            cameraBtn.disabled = true;
-            
-            elements.cameraArea.innerHTML = '<p>카메라 권한을 확인 중...</p>';
-            
-            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-                navigator.mediaDevices.getUserMedia({
-                    video: { 
-                        facingMode: 'environment',
-                        width: { ideal: 1280 },
-                        height: { ideal: 720 }
-                    }
-                })
-                .then(function(stream) {
-                    videoStream = stream;
-                    const video = document.createElement('video');
-                    video.srcObject = stream;
-                    video.play();
-                    video.style.width = '100%';
-                    video.style.height = '100%';
-                    video.style.objectFit = 'cover';
-                    
-                    elements.cameraArea.innerHTML = '';
-                    elements.cameraArea.appendChild(video);
-                    
-                    // 안내 메시지
-                    const overlay = document.createElement('div');
-                    overlay.style.position = 'absolute';
-                    overlay.style.top = '10px';
-                    overlay.style.left = '50%';
-                    overlay.style.transform = 'translateX(-50%)';
-                    overlay.style.color = 'white';
-                    overlay.style.fontSize = '14px';
-                    overlay.style.backgroundColor = 'rgba(0,0,0,0.7)';
-                    overlay.style.padding = '5px 10px';
-                    overlay.style.borderRadius = '4px';
-                    overlay.textContent = `${currentMode === 'barcode' ? '바코드' : '입고번호'}를 카메라에 맞춰주세요`;
-                    elements.cameraArea.appendChild(overlay);
-                    
-                    // 버튼 상태 변경
-                    cameraBtn.innerHTML = '<span>📹</span>카메라 중지';
-                    cameraBtn.onclick = stopCamera;
-                    cameraBtn.disabled = false;
-                })
-                .catch(function(error) {
-                    console.error('카메라 오류:', error);
-                    showError('카메라 접근 실패. 수동 입력을 사용해주세요.');
-                    elements.cameraArea.innerHTML = '<p style="color: #dc2626;">카메라 접근 실패</p>';
-                    
-                    cameraBtn.innerHTML = '<span>📷</span>카메라 시작';
-                    cameraBtn.onclick = startCamera;
-                    cameraBtn.disabled = false;
-                });
+        // 스캐닝 상태 설정
+        function setScanningState(isScanning) {
+            if (isScanning) {
+                elements.scanArea.classList.add('scanning');
+                elements.scanIcon.textContent = '🔴';
+                elements.scanTitle.textContent = '스캔 중...';
+                elements.scanSubtitle.textContent = 'PDA 스캐너로 스캔하세요';
+                elements.statusIndicator.textContent = '스캔중';
+                elements.statusIndicator.className = 'status-indicator status-scanning';
             } else {
-                showError('이 기기에서는 카메라를 사용할 수 없습니다.');
-                elements.cameraArea.innerHTML = '<p style="color: #dc2626;">카메라 미지원</p>';
-                
-                cameraBtn.innerHTML = '<span>📷</span>카메라 시작';
-                cameraBtn.disabled = false;
+                elements.scanArea.classList.remove('scanning');
+                elements.scanIcon.textContent = '📱';
+                updateScanUI();
+                elements.statusIndicator.textContent = '준비';
+                elements.statusIndicator.className = 'status-indicator status-ready';
             }
         }
         
-        // 카메라 중지
-        function stopCamera() {
-            if (videoStream) {
-                videoStream.getTracks().forEach(track => track.stop());
-                videoStream = null;
+        // 스캔 입력 처리
+        function processScanInput() {
+            const scanValue = elements.scanInput.value.trim();
+            
+            if (!scanValue) {
+                showError('스캔된 데이터가 없습니다.');
+                return;
             }
             
-            elements.cameraArea.innerHTML = '<p>카메라가 중지되었습니다</p>';
+            // 스캔 성공 효과
+            setScanningState(false);
+            elements.scanInput.value = '';
             
-            const cameraBtn = document.getElementById('cameraBtn');
-            cameraBtn.innerHTML = '<span>📷</span>카메라 시작';
-            cameraBtn.onclick = startCamera;
+            // 검색 실행
+            searchByValue(scanValue);
+        }
+        
+        // 값으로 검색
+        function searchByValue(searchValue) {
+            const searchKey = currentMode === 'barcode' ? '바코드' : '입고번호';
+            const result = sampleData.find(item => 
+                item[searchKey].toString() === searchValue.toString()
+            );
+            
+            if (result) {
+                currentResult = result;
+                showResult(result);
+            } else {
+                showError(`${currentMode === 'barcode' ? '바코드' : '입고번호'}를 찾을 수 없습니다: ${searchValue}`);
+                focusScanInput();
+            }
+        }
+        
+        // 스캔 입력창에 포커스
+        function focusScanInput() {
+            setTimeout(() => {
+                elements.scanInput.focus();
+            }, 100);
         }
         
         // 수동 입력 화면 표시
@@ -605,10 +689,12 @@
             hideAllCards();
             elements.scanModeCard.classList.remove('hidden');
             elements.manualInput.value = '';
+            elements.scanInput.value = '';
             hideError();
+            focusScanInput();
         }
         
-        // 상품 검색
+        // 수동 검색
         function searchItem() {
             const searchValue = elements.manualInput.value.trim();
             
@@ -617,17 +703,7 @@
                 return;
             }
             
-            const searchKey = currentMode === 'barcode' ? '바코드' : '입고번호';
-            const result = sampleData.find(item => 
-                item[searchKey].toString() === searchValue.toString()
-            );
-            
-            if (result) {
-                currentResult = result;
-                showResult(result);
-            } else {
-                showError(`${currentMode === 'barcode' ? '바코드' : '입고번호'}를 찾을 수 없습니다.`);
-            }
+            searchByValue(searchValue);
         }
         
         // 검색 결과 표시
@@ -685,7 +761,8 @@
             console.log('입고 완료:', {
                 item: currentResult,
                 actualQuantity: actualQuantity,
-                actualLocation: actualLocation
+                actualLocation: actualLocation,
+                timestamp: new Date().toISOString()
             });
             
             hideAllCards();
@@ -695,13 +772,14 @@
         // 새로운 스캔 시작
         function startNewScan() {
             currentResult = null;
-            stopCamera();
             hideAllCards();
             elements.scanModeCard.classList.remove('hidden');
             elements.manualInput.value = '';
+            elements.scanInput.value = '';
             elements.actualQuantity.value = '';
             elements.actualLocation.value = '';
             hideError();
+            focusScanInput();
         }
         
         // 모든 카드 숨기기
@@ -736,10 +814,17 @@
         // 페이지 로드 시 초기화
         document.addEventListener('DOMContentLoaded', init);
         
-        // 페이지 언로드 시 카메라 정리
-        window.addEventListener('beforeunload', function() {
-            if (videoStream) {
-                videoStream.getTracks().forEach(track => track.stop());
+        // 페이지가 보일 때마다 스캔 입력창에 포커스
+        document.addEventListener('visibilitychange', function() {
+            if (!document.hidden && !elements.scanModeCard.classList.contains('hidden')) {
+                focusScanInput();
+            }
+        });
+        
+        // 윈도우 포커스 시 스캔 입력창에 포커스
+        window.addEventListener('focus', function() {
+            if (!elements.scanModeCard.classList.contains('hidden')) {
+                focusScanInput();
             }
         });
     </script>

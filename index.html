@@ -24,7 +24,7 @@
         }
         
         .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
             color: white;
             padding: 20px;
             text-align: center;
@@ -34,6 +34,10 @@
         .header h1 {
             font-size: 24px;
             margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
         
         .header p {
@@ -62,23 +66,30 @@
         
         .mode-btn {
             padding: 15px;
-            border: 2px solid #e0e0e0;
+            border: 2px solid #e5e7eb;
             border-radius: 8px;
             background: white;
             cursor: pointer;
             text-align: center;
             transition: all 0.3s ease;
             font-size: 14px;
+            font-weight: 500;
         }
         
         .mode-btn.active {
-            border-color: #667eea;
-            background: #f0f4ff;
-            color: #667eea;
+            border-color: #2563eb;
+            background: #eff6ff;
+            color: #2563eb;
         }
         
         .mode-btn:hover {
-            border-color: #667eea;
+            border-color: #2563eb;
+        }
+        
+        .mode-btn .icon {
+            font-size: 24px;
+            margin-bottom: 5px;
+            display: block;
         }
         
         .input-group {
@@ -89,13 +100,13 @@
             display: block;
             margin-bottom: 5px;
             font-weight: 500;
-            color: #333;
+            color: #374151;
         }
         
         .input-group input {
             width: 100%;
             padding: 12px;
-            border: 2px solid #e0e0e0;
+            border: 2px solid #e5e7eb;
             border-radius: 8px;
             font-size: 16px;
             transition: border-color 0.3s ease;
@@ -103,7 +114,7 @@
         
         .input-group input:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: #2563eb;
         }
         
         .btn {
@@ -116,58 +127,75 @@
             cursor: pointer;
             transition: all 0.3s ease;
             margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
         
         .btn-primary {
-            background: #667eea;
+            background: #2563eb;
             color: white;
         }
         
         .btn-primary:hover {
-            background: #5a6fd8;
+            background: #1d4ed8;
         }
         
         .btn-secondary {
-            background: #6c757d;
+            background: #6b7280;
             color: white;
         }
         
         .btn-secondary:hover {
-            background: #5a6268;
+            background: #4b5563;
         }
         
         .btn-success {
-            background: #28a745;
+            background: #059669;
             color: white;
         }
         
         .btn-success:hover {
-            background: #218838;
+            background: #047857;
+        }
+        
+        .btn-danger {
+            background: #dc2626;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #b91c1c;
         }
         
         .alert {
             padding: 12px;
             border-radius: 8px;
             margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         
         .alert-success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
         }
         
         .alert-error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
         }
         
         .result-card {
-            background: #f8f9fa;
-            border-left: 4px solid #28a745;
+            background: #f9fafb;
+            border-left: 4px solid #059669;
             padding: 15px;
             margin-bottom: 20px;
+            border-radius: 0 8px 8px 0;
         }
         
         .result-item {
@@ -182,33 +210,36 @@
         }
         
         .result-label {
-            color: #6c757d;
+            color: #6b7280;
         }
         
         .result-value {
             font-weight: 500;
-            color: #333;
+            color: #374151;
         }
         
         .sample-data {
-            background: #e3f2fd;
-            border: 1px solid #bbdefb;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
             border-radius: 8px;
             padding: 15px;
             font-size: 14px;
         }
         
         .sample-data h4 {
-            color: #1565c0;
+            color: #1d4ed8;
             margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
         
         .hidden {
-            display: none;
+            display: none !important;
         }
         
         .camera-area {
-            background: #000;
+            background: #111827;
             border-radius: 8px;
             height: 200px;
             display: flex;
@@ -216,14 +247,49 @@
             justify-content: center;
             color: white;
             margin-bottom: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .camera-area video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .camera-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ffffff40;
+            border-radius: 50%;
+            border-top-color: #ffffff;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>📦 입고 PDA 시스템</h1>
-            <p>총 3개 상품 로드됨</p>
+            <h1>
+                <span>📦</span>
+                입고 PDA 시스템
+            </h1>
+            <p id="headerInfo">총 3개 상품 로드됨</p>
         </div>
         
         <div class="content">
@@ -231,11 +297,13 @@
             <div class="card" id="scanModeCard">
                 <h3 style="margin-bottom: 15px;">스캔 모드 선택</h3>
                 <div class="mode-selector">
-                    <div class="mode-btn active" onclick="selectMode('barcode')">
-                        📊<br>바코드 스캔
+                    <div class="mode-btn active" data-mode="barcode">
+                        <span class="icon">📊</span>
+                        바코드 스캔
                     </div>
-                    <div class="mode-btn" onclick="selectMode('receipt')">
-                        📦<br>입고번호 스캔
+                    <div class="mode-btn" data-mode="receipt">
+                        <span class="icon">📦</span>
+                        입고번호 스캔
                     </div>
                 </div>
                 
@@ -245,16 +313,25 @@
                     <div class="camera-area" id="cameraArea">
                         <p>카메라 준비 중...</p>
                     </div>
-                    <button class="btn btn-primary" onclick="startCamera()">📷 카메라 시작</button>
-                    <button class="btn btn-secondary" onclick="showManualInput()">⌨️ 수동 입력</button>
+                    <button class="btn btn-primary" id="cameraBtn">
+                        <span>📷</span>
+                        카메라 시작
+                    </button>
+                    <button class="btn btn-secondary" id="manualBtn">
+                        <span>⌨️</span>
+                        수동 입력
+                    </button>
                 </div>
                 
                 <!-- 테스트 데이터 -->
                 <div class="sample-data">
-                    <h4>📝 테스트용 샘플 데이터</h4>
+                    <h4>
+                        <span>📝</span>
+                        테스트용 샘플 데이터
+                    </h4>
                     <div><strong>바코드:</strong> 8809826714335</div>
                     <div><strong>입고번호:</strong> DSIR-ES2-0811-105122-4257</div>
-                    <p style="margin-top: 10px; font-size: 12px;">위 값들로 테스트해보세요!</p>
+                    <p style="margin-top: 10px; font-size: 12px; color: #6b7280;">위 값들로 테스트해보세요!</p>
                 </div>
             </div>
             
@@ -264,21 +341,31 @@
                 <div class="input-group">
                     <input type="text" id="manualInput" placeholder="바코드를 입력하세요">
                 </div>
-                <button class="btn btn-primary" onclick="searchItem()">🔍 검색</button>
-                <button class="btn btn-secondary" onclick="backToScan()">← 돌아가기</button>
+                <button class="btn btn-primary" id="searchBtn">
+                    <span>🔍</span>
+                    검색
+                </button>
+                <button class="btn btn-secondary" id="backBtn">
+                    <span>←</span>
+                    돌아가기
+                </button>
             </div>
             
             <!-- 검색 결과 -->
             <div class="card hidden" id="resultCard">
                 <div class="alert alert-success">
-                    ✅ 검색 완료
+                    <span>✅</span>
+                    검색 완료
                 </div>
                 
                 <div class="result-card" id="productInfo">
                     <!-- 상품 정보가 여기에 표시됩니다 -->
                 </div>
                 
-                <h4 style="margin-bottom: 15px;">📍 실제 입고 정보</h4>
+                <h4 style="margin-bottom: 15px;">
+                    <span style="margin-right: 5px;">📍</span>
+                    실제 입고 정보
+                </h4>
                 <div class="input-group">
                     <label>실제 입고 수량</label>
                     <input type="number" id="actualQuantity" placeholder="실제 입고된 수량을 입력하세요">
@@ -288,20 +375,31 @@
                     <input type="text" id="actualLocation" placeholder="적치할 위치를 입력하세요 (예: B11-402-05-0)">
                 </div>
                 
-                <button class="btn btn-success" onclick="completeProcess()">✅ 입고 완료 처리</button>
-                <button class="btn btn-primary" onclick="startNewScan()">🔄 새로운 스캔 시작</button>
+                <button class="btn btn-success" id="completeBtn">
+                    <span>✅</span>
+                    입고 완료 처리
+                </button>
+                <button class="btn btn-primary" id="newScanBtn">
+                    <span>🔄</span>
+                    새로운 스캔 시작
+                </button>
             </div>
             
             <!-- 완료 상태 -->
             <div class="card hidden" id="completeCard">
-                <div class="alert alert-success">
-                    🎉 입고가 완료되었습니다!
+                <div class="alert alert-success text-center">
+                    <span>🎉</span>
+                    입고가 완료되었습니다!
                 </div>
-                <button class="btn btn-primary" onclick="startNewScan()">🔄 새로운 스캔 시작</button>
+                <button class="btn btn-primary" id="newScanBtn2">
+                    <span>🔄</span>
+                    새로운 스캔 시작
+                </button>
             </div>
             
             <!-- 오류 메시지 -->
             <div class="alert alert-error hidden" id="errorAlert">
+                <span>⚠️</span>
                 <span id="errorMessage"></span>
             </div>
         </div>
@@ -345,8 +443,59 @@
             }
         ];
         
-        let currentMode = 'barcode'; // barcode 또는 receipt
+        // 전역 변수
+        let currentMode = 'barcode';
         let currentResult = null;
+        let videoStream = null;
+        
+        // DOM 요소들
+        const elements = {
+            scanModeCard: document.getElementById('scanModeCard'),
+            manualInputCard: document.getElementById('manualInputCard'),
+            resultCard: document.getElementById('resultCard'),
+            completeCard: document.getElementById('completeCard'),
+            errorAlert: document.getElementById('errorAlert'),
+            scanTitle: document.getElementById('scanTitle'),
+            manualTitle: document.getElementById('manualTitle'),
+            manualInput: document.getElementById('manualInput'),
+            cameraArea: document.getElementById('cameraArea'),
+            productInfo: document.getElementById('productInfo'),
+            actualQuantity: document.getElementById('actualQuantity'),
+            actualLocation: document.getElementById('actualLocation'),
+            errorMessage: document.getElementById('errorMessage')
+        };
+        
+        // 초기화
+        function init() {
+            setupEventListeners();
+            selectMode('barcode');
+        }
+        
+        // 이벤트 리스너 설정
+        function setupEventListeners() {
+            // 모드 선택 버튼들
+            document.querySelectorAll('.mode-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    selectMode(this.dataset.mode);
+                });
+            });
+            
+            // 각종 버튼들
+            document.getElementById('cameraBtn').addEventListener('click', startCamera);
+            document.getElementById('manualBtn').addEventListener('click', showManualInput);
+            document.getElementById('searchBtn').addEventListener('click', searchItem);
+            document.getElementById('backBtn').addEventListener('click', backToScan);
+            document.getElementById('completeBtn').addEventListener('click', completeProcess);
+            document.getElementById('newScanBtn').addEventListener('click', startNewScan);
+            document.getElementById('newScanBtn2').addEventListener('click', startNewScan);
+            
+            // Enter 키 이벤트
+            elements.manualInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    searchItem();
+                }
+            });
+        }
         
         // 모드 선택
         function selectMode(mode) {
@@ -356,19 +505,22 @@
             document.querySelectorAll('.mode-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
-            event.target.classList.add('active');
+            document.querySelector(`[data-mode="${mode}"]`).classList.add('active');
             
             // 타이틀 업데이트
             const title = mode === 'barcode' ? '바코드 스캔' : '입고번호 스캔';
-            document.getElementById('scanTitle').textContent = title;
-            document.getElementById('manualTitle').textContent = `${mode === 'barcode' ? '바코드' : '입고번호'} 수동 입력`;
-            document.getElementById('manualInput').placeholder = `${mode === 'barcode' ? '바코드' : '입고번호'}를 입력하세요`;
+            elements.scanTitle.textContent = title;
+            elements.manualTitle.textContent = `${mode === 'barcode' ? '바코드' : '입고번호'} 수동 입력`;
+            elements.manualInput.placeholder = `${mode === 'barcode' ? '바코드' : '입고번호'}를 입력하세요`;
         }
         
         // 카메라 시작
         function startCamera() {
-            const cameraArea = document.getElementById('cameraArea');
-            cameraArea.innerHTML = '<p>카메라 권한을 확인 중...</p>';
+            const cameraBtn = document.getElementById('cameraBtn');
+            cameraBtn.innerHTML = '<span class="loading"></span>카메라 시작 중...';
+            cameraBtn.disabled = true;
+            
+            elements.cameraArea.innerHTML = '<p>카메라 권한을 확인 중...</p>';
             
             if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
                 navigator.mediaDevices.getUserMedia({
@@ -379,56 +531,86 @@
                     }
                 })
                 .then(function(stream) {
+                    videoStream = stream;
                     const video = document.createElement('video');
                     video.srcObject = stream;
                     video.play();
                     video.style.width = '100%';
-                    video.style.height = '200px';
+                    video.style.height = '100%';
                     video.style.objectFit = 'cover';
-                    video.style.borderRadius = '8px';
                     
-                    cameraArea.innerHTML = '';
-                    cameraArea.appendChild(video);
+                    elements.cameraArea.innerHTML = '';
+                    elements.cameraArea.appendChild(video);
                     
-                    // 스캔 안내 메시지 추가
-                    const message = document.createElement('p');
-                    message.textContent = `${currentMode === 'barcode' ? '바코드' : '입고번호'}를 카메라에 맞춰주세요`;
-                    message.style.color = 'white';
-                    message.style.position = 'absolute';
-                    message.style.top = '10px';
-                    message.style.left = '50%';
-                    message.style.transform = 'translateX(-50%)';
-                    message.style.fontSize = '14px';
-                    cameraArea.style.position = 'relative';
-                    cameraArea.appendChild(message);
+                    // 안내 메시지
+                    const overlay = document.createElement('div');
+                    overlay.style.position = 'absolute';
+                    overlay.style.top = '10px';
+                    overlay.style.left = '50%';
+                    overlay.style.transform = 'translateX(-50%)';
+                    overlay.style.color = 'white';
+                    overlay.style.fontSize = '14px';
+                    overlay.style.backgroundColor = 'rgba(0,0,0,0.7)';
+                    overlay.style.padding = '5px 10px';
+                    overlay.style.borderRadius = '4px';
+                    overlay.textContent = `${currentMode === 'barcode' ? '바코드' : '입고번호'}를 카메라에 맞춰주세요`;
+                    elements.cameraArea.appendChild(overlay);
+                    
+                    // 버튼 상태 변경
+                    cameraBtn.innerHTML = '<span>📹</span>카메라 중지';
+                    cameraBtn.onclick = stopCamera;
+                    cameraBtn.disabled = false;
                 })
                 .catch(function(error) {
+                    console.error('카메라 오류:', error);
                     showError('카메라 접근 실패. 수동 입력을 사용해주세요.');
-                    cameraArea.innerHTML = '<p style="color: #ff6b6b;">카메라 접근 실패</p>';
+                    elements.cameraArea.innerHTML = '<p style="color: #dc2626;">카메라 접근 실패</p>';
+                    
+                    cameraBtn.innerHTML = '<span>📷</span>카메라 시작';
+                    cameraBtn.onclick = startCamera;
+                    cameraBtn.disabled = false;
                 });
             } else {
-                showError('이 기기에서는 카메라를 사용할 수 없습니다. 수동 입력을 사용해주세요.');
-                cameraArea.innerHTML = '<p style="color: #ff6b6b;">카메라 미지원</p>';
+                showError('이 기기에서는 카메라를 사용할 수 없습니다.');
+                elements.cameraArea.innerHTML = '<p style="color: #dc2626;">카메라 미지원</p>';
+                
+                cameraBtn.innerHTML = '<span>📷</span>카메라 시작';
+                cameraBtn.disabled = false;
             }
+        }
+        
+        // 카메라 중지
+        function stopCamera() {
+            if (videoStream) {
+                videoStream.getTracks().forEach(track => track.stop());
+                videoStream = null;
+            }
+            
+            elements.cameraArea.innerHTML = '<p>카메라가 중지되었습니다</p>';
+            
+            const cameraBtn = document.getElementById('cameraBtn');
+            cameraBtn.innerHTML = '<span>📷</span>카메라 시작';
+            cameraBtn.onclick = startCamera;
         }
         
         // 수동 입력 화면 표시
         function showManualInput() {
             hideAllCards();
-            document.getElementById('manualInputCard').classList.remove('hidden');
-            document.getElementById('manualInput').focus();
+            elements.manualInputCard.classList.remove('hidden');
+            elements.manualInput.focus();
         }
         
         // 스캔 화면으로 돌아가기
         function backToScan() {
             hideAllCards();
-            document.getElementById('scanModeCard').classList.remove('hidden');
-            document.getElementById('manualInput').value = '';
+            elements.scanModeCard.classList.remove('hidden');
+            elements.manualInput.value = '';
+            hideError();
         }
         
         // 상품 검색
         function searchItem() {
-            const searchValue = document.getElementById('manualInput').value.trim();
+            const searchValue = elements.manualInput.value.trim();
             
             if (!searchValue) {
                 showError('검색값을 입력해주세요.');
@@ -451,10 +633,9 @@
         // 검색 결과 표시
         function showResult(item) {
             hideAllCards();
-            document.getElementById('resultCard').classList.remove('hidden');
+            elements.resultCard.classList.remove('hidden');
             
-            const productInfo = document.getElementById('productInfo');
-            productInfo.innerHTML = `
+            elements.productInfo.innerHTML = `
                 <div class="result-item">
                     <span class="result-label">입고번호:</span>
                     <span class="result-value">${item['입고번호']}</span>
@@ -473,7 +654,7 @@
                 </div>
                 <div class="result-item">
                     <span class="result-label">예정수량:</span>
-                    <span class="result-value" style="color: #667eea;">${item['수량']}개</span>
+                    <span class="result-value" style="color: #2563eb; font-weight: 600;">${item['수량']}개</span>
                 </div>
                 <div class="result-item">
                     <span class="result-label">소비기한:</span>
@@ -490,14 +671,16 @@
             `;
             
             // 기본값 설정
-            document.getElementById('actualQuantity').value = item['수량'];
-            document.getElementById('actualLocation').value = item['적치 로케이션'] || '';
+            elements.actualQuantity.value = item['수량'];
+            elements.actualLocation.value = item['적치 로케이션'] || '';
+            
+            hideError();
         }
         
         // 입고 완료 처리
         function completeProcess() {
-            const actualQuantity = document.getElementById('actualQuantity').value;
-            const actualLocation = document.getElementById('actualLocation').value;
+            const actualQuantity = elements.actualQuantity.value;
+            const actualLocation = elements.actualLocation.value;
             
             console.log('입고 완료:', {
                 item: currentResult,
@@ -506,33 +689,39 @@
             });
             
             hideAllCards();
-            document.getElementById('completeCard').classList.remove('hidden');
+            elements.completeCard.classList.remove('hidden');
         }
         
         // 새로운 스캔 시작
         function startNewScan() {
             currentResult = null;
+            stopCamera();
             hideAllCards();
-            document.getElementById('scanModeCard').classList.remove('hidden');
-            document.getElementById('manualInput').value = '';
-            document.getElementById('actualQuantity').value = '';
-            document.getElementById('actualLocation').value = '';
+            elements.scanModeCard.classList.remove('hidden');
+            elements.manualInput.value = '';
+            elements.actualQuantity.value = '';
+            elements.actualLocation.value = '';
             hideError();
         }
         
         // 모든 카드 숨기기
         function hideAllCards() {
-            document.querySelectorAll('.card').forEach(card => {
-                card.classList.add('hidden');
+            const cards = [
+                elements.scanModeCard,
+                elements.manualInputCard,
+                elements.resultCard,
+                elements.completeCard
+            ];
+            
+            cards.forEach(card => {
+                if (card) card.classList.add('hidden');
             });
         }
         
         // 오류 메시지 표시
         function showError(message) {
-            const errorAlert = document.getElementById('errorAlert');
-            const errorMessage = document.getElementById('errorMessage');
-            errorMessage.textContent = message;
-            errorAlert.classList.remove('hidden');
+            elements.errorMessage.textContent = message;
+            elements.errorAlert.classList.remove('hidden');
             
             setTimeout(() => {
                 hideError();
@@ -541,19 +730,17 @@
         
         // 오류 메시지 숨기기
         function hideError() {
-            document.getElementById('errorAlert').classList.add('hidden');
+            elements.errorAlert.classList.add('hidden');
         }
         
-        // Enter 키 이벤트
-        document.getElementById('manualInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                searchItem();
-            }
-        });
+        // 페이지 로드 시 초기화
+        document.addEventListener('DOMContentLoaded', init);
         
-        // 초기화
-        document.addEventListener('DOMContentLoaded', function() {
-            selectMode('barcode');
+        // 페이지 언로드 시 카메라 정리
+        window.addEventListener('beforeunload', function() {
+            if (videoStream) {
+                videoStream.getTracks().forEach(track => track.stop());
+            }
         });
     </script>
 </body>

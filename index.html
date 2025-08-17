@@ -146,7 +146,7 @@
             color: #374151;
         }
         
-        .input-group input {
+        .input-group input, .input-group select {
             width: 100%;
             padding: 12px;
             border: 2px solid #e5e7eb;
@@ -155,7 +155,7 @@
             transition: border-color 0.3s ease;
         }
         
-        .input-group input:focus {
+        .input-group input:focus, .input-group select:focus {
             outline: none;
             border-color: #2563eb;
             box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
@@ -334,6 +334,30 @@
             font-size: 16px;
             margin-right: 5px;
         }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .notification.success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+
+        .notification.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
     </style>
 </head>
 <body>
@@ -438,7 +462,7 @@
                 </div>
                 <div class="input-group">
                     <label>특이사항</label>
-                    <select id="specialNote" style="width: 100%; padding: 12px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 16px; transition: border-color 0.3s ease;">
+                    <select id="specialNote">
                         <option value="">선택하세요</option>
                         <option value="벌크">벌크</option>
                         <option value="미검수">미검수</option>
@@ -487,6 +511,7 @@
                 "소비기한": "2026-12-18",
                 "제조로트": "F19X001",
                 "PLT.NO": "250818-1",
+                "특이사항": "",
                 "적치 로케이션": ""
             },
             {
@@ -498,6 +523,7 @@
                 "소비기한": "2028-06-10",
                 "제조로트": "NEA",
                 "PLT.NO": "250818-2",
+                "특이사항": "",
                 "적치 로케이션": "B11-402-05-0"
             },
             {
@@ -509,9 +535,13 @@
                 "소비기한": "2028-05-22",
                 "제조로트": "BDA",
                 "PLT.NO": "250818-3",
+                "특이사항": "",
                 "적치 로케이션": "B07-406-21-0"
             }
         ];
+        
+        // ⭐ 여기에 복사한 웹 앱 URL을 붙여넣으세요!
+        const WEB_APP_URL = https://script.google.com/macros/s/AKfycbz21KMrlm3fvy6HD111WmD6mUq1SfEQnKmav6nhfu0obCUvKB-U4_uWHOROxKoyAjL8Wg/exec
         
         // 전역 변수
         let currentMode = 'barcode';
@@ -782,6 +812,9 @@
             const actualLocation = elements.actualLocation.value;
             const specialNote = elements.specialNote.value;
             
+            // 구글 시트에 데이터 전송
+            updateGoogleSheet(currentResult, actualQuantity, actualLocation, specialNote);
+            
             console.log('입고 완료:', {
                 item: currentResult,
                 actualQuantity: actualQuantity,
@@ -792,6 +825,74 @@
             
             hideAllCards();
             elements.completeCard.classList.remove('hidden');
+        }
+        
+        // 구글 시트 업데이트 함수
+        function updateGoogleSheet(item, actualQuantity, actualLocation, specialNote) {
+            // WEB_APP_URL이 설정되지 않은 경우 스킵
+            if (WEB_APP_URL === 'YOUR_WEB_APP_URL_HERE') {
+                showNotification('구글 시트 URL이 설정되지 않았습니다.', 'error');
+                return;
+            }
+            
+            const data = {
+                searchType: currentMode, // 'barcode' 또는 'receipt'
+                searchValue: currentMode === 'barcode' ? item['바코드'] : item['입고번호'],
+                actualQuantity: actualQuantity,
+                actualLocation: actualLocation,
+                specialNote: specialNote
+            };
+            
+            showNotification('구글 시트에 저장 중...', 'success');
+            
+            // 구글 시트에 데이터 전송
+            fetch(WEB_APP_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    console.log('구글 시트 업데이트 성공:', result);
+                    showNotification('구글 시트에 데이터가 저장되었습니다! 🎉', 'success');
+                } else {
+                    console.error('구글 시트 업데이트 실패:', result);
+                    showNotification('구글 시트 저장 실패: ' + result.message, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('연결 오류:', error);
+                showNotification('구글 시트 연결 실패. 네트워크를 확인해주세요.', 'error');
+            });
+        }
+        
+        // 알림 메시지 표시
+        function showNotification(message, type = 'success') {
+            // 기존 알림 제거
+            const existingNotification = document.querySelector('.notification');
+            if (existingNotification) {
+                existingNotification.remove();
+            }
+            
+            // 새 알림 생성
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `
+                <span>${type === 'success' ? '✅' : '⚠️'}</span>
+                <span>${message}</span>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // 3초 후 자동 제거
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.remove();
+                }
+            }, 3000);
         }
         
         // 새로운 스캔 시작

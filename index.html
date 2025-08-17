@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>입고 PDA 시스템</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useRef, useEffect } = React;
+        const { Camera, Package, Search, CheckCircle, AlertCircle, BarChart3, MapPin } = lucide;
+
+        const WarehousePDAApp = () => {
+            const [warehouseData, setWarehouseData] = useState([]);
+            const [currentMode, setCurrentMode] = useState('scan');
+            const [scanType, setScanType] = useState('barcode');
+            const [scanInput, setScanInput] = useState('');
+            const [searchResult, setSearchResult] = useState(null);
+            const [isLoading, setIsLoading] = useState(false);
+            const [error, setError] = useState('');
+            const [actualQuantity, setActualQuantity] = useState('');
+            const [actualLocation, setActualLocation] = useState('');
+            const [isProcessed, setIsProcessed] = useState(false);
+            const [csvUploaded, setCsvUploaded] = useState(false);
+            
+            const videoRef = useRef(null);
+            const fileInputRef = useRef(null);
+            const [isScanning, setIsScanning] = useState(false);
+
+            // 샘플 데이터 (실제 CSV 업로드 전까지 사용)
+            const sampleData = [
+                {
+                    "입고번호": "DSIR-ES2-0811-105122-4257",
+                    "고객사": "정샘물뷰티",
+                    "품명": "아티스트드로잉립펜슬#오버브라운",
+                    "바코드": "8809826714335",
+                    "수량": "720",
+                    "소비기한": "2026-12-18",
+                    "제조로트": "F19X001",
+                    "파렛넘버": "",
+                    "PLT.NO": "250818-1",
+                    "특이사항": "",
+                    "적치 로케이션": ""
+                },
+                {
+                    "입고번호": "DSIR-ES2-0811-105122-4257",
+                    "고객사": "정샘물뷰티",
+                    "품명": "에센셜스킨누더쿠션#페어라이트",
+                    "바코드": "8809467632272",
+                    "수량": "240",
+                    "소비기한": "2028-06-10",
+                    "제조로트": "NEA",
+                    "파렛넘버": "",
+                    "PLT.NO": "250818-2",
+                    "특이사항": "",
+                    "적치 로케이션": "B11-402-05-0"
+                },
+                {
+                    "입고번호": "DSIR-ES2-0811-105122-4257",
+                    "고객사": "정샘물뷰티",
+                    "품명": "에센셜스킨누더쿠션#핑크라이트",
+                    "바코드": "8809467634559",
+                    "수량": "80",
+                    "소비기한": "2028-05-22",
+                    "제조로트": "BDA",
+                    "파렛넘버": "",
+                    "PLT.NO": "250818-3",
+                    "특이사항": "",
+                    "적치 로케이션": "B07-406-21-0"
+                }
+            ];
+
+            useEffect(() => {
+                // 샘플 데이터로 시작
+                setWarehouseData(sampleData);
+            }, []);
+
+            // CSV 파일 업로드 처리
+            const handleFileUpload = (event) => {
+                const file = event.target.files[0];
+                if (file && file.type === 'text/csv') {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const csvText = e.target.result;
+                        Papa.parse(csvText, {
+                            header: true,
+                            skipEmptyLines: true,
+                            complete: (results) => {
+                                setWarehouseData(results.data);
+                                setCsvUploaded(true);
+                                setError('');
+                                console.log('CSV 파일 로드 완료:', results.data.length, '개 항목');
+                            },
+                            error: (error) => {
+                                setError('CSV 파일 로드 실패: ' + error.message);
+                            }
+                        });
+                    };
+                    reader.readAsText(file);
+                } else {
+                    setError('CSV 파일만 업로드 가능합니다.');
+                }
+            };
+
+            // 바코드/입고번호로 검색
+            const searchItem = (searchValue, type) => {
+                setIsLoading(true);
+                setError('');
+                
+                try {
+                    const searchKey = type === 'barcode' ? '바코드' : '입고번호';
+                    const results = warehouseData.filter(item => {
+                        const itemValue = item[searchKey]?.toString().trim();
+                        return itemValue === searchValue.toString().trim();
+                    });
+                    
+                    if (results.length > 0) {
+                        setSearchResult(results[0]);
+                        setActualQuantity(results[0]['수량'] || '');
+                        setActualLocation(results[0]['적치 로케이션'] || '');
+                        setCurrentMode('result');
+                    } else {
+                        setError(`${type === 'barcode' ? '바코드' : '입고번호'}를 찾을 수 없습니다.`);
+                        setSearchResult(null);
+                    }
+                } catch (error) {
+                    setError('검색 중 오류가 발생했습니다.');
+                } finally {
+                    setIsLoading(false);
+                }
+            };
+
+            // 카메라 스캔 시작
+            const startCamera = async () => {
+                try {
+                    setIsScanning(true);
+                    const stream = await navigator.mediaDevices.getUserMedia({
+                        video: { 
+                            facingMode: 'environment',
+                            width: { ideal: 1280 },
+                            height: { ideal: 720 }
+                        }
+                    });
+                    
+                    if (videoRef.current) {
+                        videoRef.current.srcObject = stream;
+                        videoRef.current.play();
+                    }
+                } catch (error) {
+                    setError('카메라 접근 실패. 수동 입력을 사용해주세요.');
+                    setIsScanning(false);
+                }
+            };
+
+            // 카메라 스캔 중지
+            const stopCamera = () => {
+                if (videoRef.current && videoRef.current.srcObject) {
+                    const tracks = videoRef.current.srcObject.getTracks();
+                    tracks.forEach(track => track.stop());
+                    videoRef.current.srcObject = null;
+                }
+                setIsScanning(false);
+            };
+
+            // 수동 검색 실행
+            const handleManualSearch = () => {
+                if (!scanInput.trim()) {
+                    setError('검색값을 입력해주세요.');
+                    return;
+                }
+                searchItem(scanInput.trim(), scanType);
+            };
+
+            // 입고 완료 처리
+            const handleProcessComplete = () => {
+                setIsProcessed(true);
+                console.log('입고 완료:', {
+                    item: searchResult,
+                    actualQuantity,
+                    actualLocation
+                });
+            };
+
+            // 새로운 스캔 시작
+            const startNewScan = () => {
+                setCurrentMode('scan');
+                setScanInput('');
+                setSearchResult(null);
+                setError('');
+                setActualQuantity('');
+                setActualLocation('');
+                setIsProcessed(false);
+                stopCamera();
+            };
+
+            return (
+                <div className="min-h-screen bg-gray-100">
+                    {/* 헤더 */}
+                    <div className="bg-blue-600 text-white p-4 shadow-lg">
+                        <h1 className="text-xl font-bold flex items-center gap-2">
+                            <Package className="w-6 h-6" />
+                            입고 PDA 시스템
+                        </h1>
+                        <p className="text-blue-100 text-sm mt-1">
+                            총 {warehouseData.length}개 상품 로드됨
+                            {csvUploaded && <span className="ml-2 bg-green-500 px-2 py-1 rounded text-xs">CSV 업로드됨</span>}
+                        </p>
+                    </div>
+
+                    <div className="p-4 max-w-md mx-auto">
+                        {/* CSV 업로드 섹션 */}
+                        {!csvUploaded && (
+                            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+                                <h3 className="font-semibold text-yellow-800 mb-2">CSV 파일 업로드</h3>
+                                <p className="text-sm text-yellow-700 mb-3">
+                                    실제 데이터를 사용하려면 CSV 파일을 업로드하세요. (현재는 샘플 데이터 사용 중)
+                                </p>
+                                <input
+                                    ref={fileInputRef}
+                                    type="file"
+                                    accept=".csv"
+                                    onChange={handleFileUpload}
+                                    className="hidden"
+                                />
+                                <button
+                                    onClick={() => fileInputRef.current?.click()}
+                                    className="w-full bg-yellow-500 text-white p-2 rounded-lg hover:bg-yellow-600 transition-colors"
+                                >
+                                    CSV 파일 선택
+                                </button>
+                            </div>
+                        )}
+
+                        {currentMode === 'scan' && (
+                            <div className="space-y-4">
+                                {/* 스캔 타입 선택 */}
+                                <div className="bg-white rounded-lg p-4 shadow">
+                                    <h2 className="font-semibold mb-3">스캔 모드 선택</h2>
+                                    <div className="grid grid-cols-2 gap-2">
+                                        <button
+                                            onClick={() => setScanType('barcode')}
+                                            className={`p-3 rounded-lg border-2 transition-colors ${
+                                                scanType === 'barcode' 
+                                                    ? 'border-blue-500 bg-blue-50 text-blue-700' 
+                                                    : 'border-gray-200 hover:border-gray-300'
+                                            }`}
+                                        >
+                                            <BarChart3 className="w-6 h-6 mx-auto mb-1" />
+                                            <div className="text-sm font-medium">바코드 스캔</div>
+                                        </button>
+                                        <button
+                                            onClick={() => setScanType('receipt')}
+                                            className={`p-3 rounded-lg border-2 transition-colors ${
+                                                scanType === 'receipt' 
+                                                    ? 'border-green-500 bg-green-50 text-green-700' 
+                                                    : 'border-gray-200 hover:border-gray-300'
+                                            }`}
+                                        >
+                                            <Package className="w-6 h-6 mx-auto mb-1" />
+                                            <div className="text-sm font-medium">입고번호 스캔</div>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {/* 카메라 스캔 영역 */}
+                                <div className="bg-white rounded-lg p-4 shadow">
+                                    <h3 className="font-semibold mb-3">
+                                        {scanType === 'barcode' ? '바코드' : '입고번호'} 스캔
+                                    </h3>
+                                    
+                                    {!isScanning ? (
+                                        <button
+                                            onClick={startCamera}
+                                            className="w-full bg-blue-500 text-white p-3 rounded-lg hover:bg-blue-600 transition-colors flex items-center justify-center gap-2"
+                                        >
+                                            <Camera className="w-5 h-5" />
+                                            카메라 시작
+                                        </button>
+                                    ) : (
+                                        <div className="space-y-3">
+                                            <video
+                                                ref={videoRef}
+                                                className="w-full h-48 bg-black rounded-lg object-cover"
+                                                playsInline
+                                            />
+                                            <div className="flex gap-2">
+                                                <button
+                                                    onClick={stopCamera}
+                                                    className="flex-1 bg-red-500 text-white p-2 rounded-lg hover:bg-red-600 transition-colors"
+                                                >
+                                                    스캔 중지
+                                                </button>
+                                                <button
+                                                    onClick={() => setCurrentMode('manual')}
+                                                    className="flex-1 bg-gray-500 text-white p-2 rounded-lg hover:bg-gray-600 transition-colors"
+                                                >
+                                                    수동 입력
+                                                </button>
+                                            </div>
+                                            <p className="text-sm text-gray-600 text-center">
+                                                {scanType === 'barcode' ? '바코드' : '입고번호'}를 카메라에 맞춰주세요
+                                            </p>
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* 수동 입력 버튼 */}
+                                <button
+                                    onClick={() => setCurrentMode('manual')}
+                                    className="w-full bg-gray-500 text-white p-3 rounded-lg hover:bg-gray-600 transition-colors flex items-center justify-center gap-2"
+                                >
+                                    <Search className="w-5 h-5" />
+                                    수동 입력
+                                </button>
+
+                                {/* 테스트용 샘플 데이터 */}
+                                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                                    <h4 className="font-semibold text-blue-800 mb-2">📝 테스트용 샘플 데이터</h4>
+                                    <div className="text-sm text-blue-700 space-y-1">
+                                        <div><strong>바코드:</strong> 8809826714335</div>
+                                        <div><strong>입고번호:</strong> DSIR-ES2-0811-105122-4257</div>
+                                        <p className="text-xs mt-2">위 값들로 테스트해보세요!</p>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {currentMode === 'manual' && (
+                            <div className="space-y-4">
+                                <div className="bg-white rounded-lg p-4 shadow">
+                                    <h2 className="font-semibold mb-3">
+                                        {scanType === 'barcode' ? '바코드' : '입고번호'} 수동 입력
+                                    </h2>
+                                    
+                                    <div className="space-y-3">
+                                        <input
+                                            type="text"
+                                            value={scanInput}
+                                            onChange={(e) => setScanInput(e.target.value)}
+                                            placeholder={scanType === 'barcode' ? '바코드를 입력하세요' : '입고번호를 입력하세요'}
+                                            className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                            onKeyPress={(e) => e.key === 'Enter' && handleManualSearch()}
+                                        />
+                                        
+                                        <div className="flex gap-2">
+                                            <button
+                                                onClick={handleManualSearch}
+                                                disabled={isLoading}
+                                                className="flex-1 bg-blue-500 text-white p-3 rounded-lg hover:bg-blue-600 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                                            >
+                                                {isLoading ? (
+                                                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                                ) : (
+                                                    <Search className="w-5 h-5" />
+                                                )}
+                                                검색
+                                            </button>
+                                            <button
+                                                onClick={startNewScan}
+                                                className="flex-1 bg-gray-500 text-white p-3 rounded-lg hover:bg-gray-600 transition-colors"
+                                            >
+                                                취소
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {currentMode === 'result' && searchResult && (
+                            <div className="space-y-4">
+                                {/* 상품 정보 */}
+                                <div className="bg-white rounded-lg p-4 shadow">
+                                    <div className="flex items-center justify-between mb-3">
+                                        <h2 className="font-semibold text-green-600 flex items-center gap-2">
+                                            <CheckCircle className="w-5 h-5" />
+                                            검색 완료
+                                        </h2>
+                                        {isProcessed && (
+                                            <span className="bg-green-100 text-green-800 px-2 py-1 rounded text-sm font-medium">
+                                                처리완료
+                                            </span>
+                                        )}
+                                    </div>
+                                    
+                                    <div className="space-y-2 text-sm">
+                                        <div className="flex justify-between">
+                                            <span className="text-gray-600">입고번호:</span>
+                                            <span className="font-medium">{searchResult['입고번호']}</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span className="text-gray-600">고객사:</span>
+                                            <span className="font-medium">{searchResult['고객사']}</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span className="text-gray-600">품명:</span>
+                                            <span className="font-medium">{searchResult['품명']}</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span className="text-gray-600">바코드:</span>
+                                            <span className="font-medium">{searchResult['바코드']}</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span className="text-gray-600">예정수량:</span>
+                                            <span className="font-medium text-blue-600">{searchResult['수량']}개</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span className="text-gray-600">소비기한:</span>
+                                            <span className="font-medium">{searchResult['소비기한']}</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span className="text-gray-600">제조로트:</span>
+                                            <span className="font-medium">{searchResult['제조로트']}</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span className="text-gray-600">PLT.NO:</span>
+                                            <span className="font-medium">{searchResult['PLT.NO']}</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* 실제 입고 정보 입력 */}
+                                <div className="bg-white rounded-lg p-4 shadow">
+                                    <h3 className="font-semibold mb-3 flex items-center gap-2">
+                                        <MapPin className="w-5 h-5" />
+                                        실제 입고 정보
+                                    </h3>
+                                    
+                                    <div className="space-y-3">
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                실제 입고 수량
+                                            </label>
+                                            <input
+                                                type="number"
+                                                value={actualQuantity}
+                                                onChange={(e) => setActualQuantity(e.target.value)}
+                                                className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                                placeholder="실제 입고된 수량을 입력하세요"
+                                            />
+                                        </div>
+                                        
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                적치 로케이션
+                                            </label>
+                                            <input
+                                                type="text"
+                                                value={actualLocation}
+                                                onChange={(e) => setActualLocation(e.target.value)}
+                                                className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                                placeholder="적치할 위치를 입력하세요 (예: B11-402-05-0)"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* 액션 버튼 */}
+                                <div className="space-y-2">
+                                    {!isProcessed ? (
+                                        <button
+                                            onClick={handleProcessComplete}
+                                            className="w-full bg-green-500 text-white p-3 rounded-lg hover:bg-green-600 transition-colors flex items-center justify-center gap-2"
+                                        >
+                                            <CheckCircle className="w-5 h-5" />
+                                            입고 완료 처리
+                                        </button>
+                                    ) : (
+                                        <div className="bg-green-50 border border-green-200 rounded-lg p-3 text-center">
+                                            <CheckCircle className="w-6 h-6 text-green-500 mx-auto mb-1" />
+                                            <p className="text-green-700 font-medium">입고가 완료되었습니다!</p>
+                                        </div>
+                                    )}
+                                    
+                                    <button
+                                        onClick={startNewScan}
+                                        className="w-full bg-blue-500 text-white p-3 rounded-lg hover:bg-blue-600 transition-colors"
+                                    >
+                                        새로운 스캔 시작
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* 에러 메시지 */}
+                        {error && (
+                            <div className="bg-red-50 border border-red-200 rounded-lg p-3 flex items-start gap-2 mt-4">
+                                <AlertCircle className="w-5 h-5 text-red-500 mt-0.5 flex-shrink-0" />
+                                <p className="text-red-700">{error}</p>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            );
+        };
+
+        ReactDOM.render(<WarehousePDAApp />, document.getElementById('root'));
+    </script>
+</body>
+</html>

@@ -436,6 +436,14 @@
                     <label>적치 로케이션</label>
                     <input type="text" id="actualLocation" placeholder="적치할 위치를 입력하세요 (예: B11-402-05-0)">
                 </div>
+                <div class="input-group">
+                    <label>특이사항</label>
+                    <select id="specialNote" style="width: 100%; padding: 12px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 16px; transition: border-color 0.3s ease;">
+                        <option value="">선택하세요</option>
+                        <option value="벌크">벌크</option>
+                        <option value="미검수">미검수</option>
+                    </select>
+                </div>
                 
                 <button class="btn btn-success" id="completeBtn">
                     <span>✅</span>
@@ -528,6 +536,7 @@
             productInfo: document.getElementById('productInfo'),
             actualQuantity: document.getElementById('actualQuantity'),
             actualLocation: document.getElementById('actualLocation'),
+            specialNote: document.getElementById('specialNote'),
             errorMessage: document.getElementById('errorMessage')
         };
         
@@ -749,7 +758,7 @@
                     <span class="result-value">${item['특이사항'] || '-'}</span>
                 </div>
                 <div class="result-item">
-                    <span class="result-label">현재 적치 로케이션:</span>
+                    <span class="result-label">적치 로케이션:</span>
                     <span class="result-value">${item['적치 로케이션'] || '-'}</span>
                 </div>
             `;
@@ -759,17 +768,25 @@
             elements.actualLocation.value = item['적치 로케이션'] || '';
             
             hideError();
+            
+            // 결과 카드가 표시된 후 스크롤을 맨 위로
+            setTimeout(() => {
+                window.scrollTo(0, 0);
+                elements.resultCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
         }
         
         // 입고 완료 처리
         function completeProcess() {
             const actualQuantity = elements.actualQuantity.value;
             const actualLocation = elements.actualLocation.value;
+            const specialNote = elements.specialNote.value;
             
             console.log('입고 완료:', {
                 item: currentResult,
                 actualQuantity: actualQuantity,
                 actualLocation: actualLocation,
+                specialNote: specialNote,
                 timestamp: new Date().toISOString()
             });
             
@@ -786,6 +803,7 @@
             elements.scanInput.value = '';
             elements.actualQuantity.value = '';
             elements.actualLocation.value = '';
+            elements.specialNote.value = '';
             hideError();
             focusScanInput();
         }

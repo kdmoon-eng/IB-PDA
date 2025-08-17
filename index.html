@@ -74,105 +74,134 @@
             text-align: center;
             transition: all 0.3s ease;
             font-size: 14px;
-            font-weight: 500;
+            font-weight: 600;
         }
         
         .mode-btn.active {
             border-color: #2563eb;
-            background: #eff6ff;
-            color: #2563eb;
+            background: #2563eb;
+            color: white;
         }
         
         .mode-btn:hover {
-            border-color: #2563eb;
+            border-color: #3b82f6;
         }
         
-        .mode-btn .icon {
-            font-size: 24px;
-            margin-bottom: 5px;
-            display: block;
-        }
-        
-        .scan-area {
-            background: linear-gradient(135deg, #059669 0%, #047857 100%);
-            border-radius: 12px;
-            padding: 30px 20px;
+        .scan-section {
             text-align: center;
-            color: white;
-            margin-bottom: 20px;
-            position: relative;
-            min-height: 120px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
         }
         
-        .scan-area.scanning {
-            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-            animation: pulse 1.5s ease-in-out infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
-        }
-        
-        .scan-area .scan-icon {
-            font-size: 48px;
-            margin-bottom: 10px;
-            display: block;
-        }
-        
-        .scan-area .scan-title {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 8px;
-        }
-        
-        .scan-area .scan-subtitle {
-            font-size: 14px;
-            opacity: 0.9;
-        }
-        
-        .input-group {
+        .scan-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 16px;
             margin-bottom: 15px;
+            text-align: center;
+            background: #f9fafb;
         }
         
-        .input-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 500;
+        .scan-input:focus {
+            outline: none;
+            border-color: #2563eb;
+            background: white;
+        }
+        
+        .scan-status {
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .scan-status.ready {
+            background: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #93c5fd;
+        }
+        
+        .scan-status.scanning {
+            background: #fef3c7;
+            color: #92400e;
+            border: 1px solid #fcd34d;
+        }
+        
+        .scan-status.success {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #86efac;
+        }
+        
+        .scan-status.error {
+            background: #fee2e2;
+            color: #dc2626;
+            border: 1px solid #fca5a5;
+        }
+        
+        .product-info {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .product-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            padding: 5px 0;
+        }
+        
+        .product-row:last-child {
+            margin-bottom: 0;
+        }
+        
+        .product-label {
+            font-weight: 600;
             color: #374151;
         }
         
-        .input-group input, .input-group select {
+        .product-value {
+            color: #6b7280;
+            text-align: right;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #374151;
+        }
+        
+        .form-input {
             width: 100%;
             padding: 12px;
             border: 2px solid #e5e7eb;
-            border-radius: 8px;
+            border-radius: 6px;
             font-size: 16px;
             transition: border-color 0.3s ease;
         }
         
-        .input-group input:focus, .input-group select:focus {
+        .form-input:focus {
             outline: none;
             border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
         }
         
-        .scan-input {
-            background: #f8fafc !important;
-            border: 3px solid #059669 !important;
-            font-size: 18px !important;
-            font-weight: 600 !important;
-            text-align: center !important;
-            color: #047857 !important;
-        }
-        
-        .scan-input:focus {
-            border-color: #dc2626 !important;
-            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1) !important;
+        .form-select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 16px;
+            background: white;
+            cursor: pointer;
         }
         
         .btn {
@@ -181,14 +210,9 @@
             border: none;
             border-radius: 8px;
             font-size: 16px;
-            font-weight: 500;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
         }
         
         .btn-primary {
@@ -200,13 +224,9 @@
             background: #1d4ed8;
         }
         
-        .btn-secondary {
-            background: #6b7280;
-            color: white;
-        }
-        
-        .btn-secondary:hover {
-            background: #4b5563;
+        .btn-primary:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
         }
         
         .btn-success {
@@ -218,145 +238,57 @@
             background: #047857;
         }
         
-        .btn-danger {
-            background: #dc2626;
+        .btn-clear {
+            background: #6b7280;
             color: white;
+            margin-top: 10px;
         }
         
-        .btn-danger:hover {
-            background: #b91c1c;
-        }
-        
-        .alert {
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .alert-success {
-            background: #d1fae5;
-            color: #065f46;
-            border: 1px solid #a7f3d0;
-        }
-        
-        .alert-error {
-            background: #fee2e2;
-            color: #991b1b;
-            border: 1px solid #fecaca;
-        }
-        
-        .result-card {
-            background: #f9fafb;
-            border-left: 4px solid #059669;
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 0 8px 8px 0;
-        }
-        
-        .result-item {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
-            font-size: 14px;
-        }
-        
-        .result-item:last-child {
-            margin-bottom: 0;
-        }
-        
-        .result-label {
-            color: #6b7280;
-        }
-        
-        .result-value {
-            font-weight: 500;
-            color: #374151;
-        }
-        
-        .sample-data {
-            background: #eff6ff;
-            border: 1px solid #bfdbfe;
-            border-radius: 8px;
-            padding: 15px;
-            font-size: 14px;
-        }
-        
-        .sample-data h4 {
-            color: #1d4ed8;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
+        .btn-clear:hover {
+            background: #4b5563;
         }
         
         .hidden {
-            display: none !important;
+            display: none;
         }
         
-        .text-center {
-            text-align: center;
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
         }
         
-        .status-indicator {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 600;
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
         
-        .status-ready {
-            background: #d1fae5;
-            color: #065f46;
-        }
-        
-        .status-scanning {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-        
-        .scanner-instructions {
-            background: #fef3c7;
-            border: 1px solid #f59e0b;
+        .instructions {
+            background: #f0f9ff;
+            border: 1px solid #0ea5e9;
             border-radius: 8px;
-            padding: 12px;
-            margin-bottom: 15px;
-            font-size: 13px;
-            color: #92400e;
+            padding: 15px;
+            margin-bottom: 20px;
         }
         
-        .scanner-instructions .icon {
+        .instructions h3 {
+            color: #0369a1;
+            margin-bottom: 10px;
             font-size: 16px;
-            margin-right: 5px;
         }
-
-        .notification {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 9999;
-            padding: 12px 20px;
-            border-radius: 8px;
-            font-weight: 500;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        
+        .instructions ul {
+            color: #0c4a6e;
+            padding-left: 20px;
         }
-
-        .notification.success {
-            background: #d1fae5;
-            color: #065f46;
-            border: 1px solid #a7f3d0;
-        }
-
-        .notification.error {
-            background: #fee2e2;
-            color: #991b1b;
-            border: 1px solid #fecaca;
+        
+        .instructions li {
+            margin-bottom: 5px;
         }
     </style>
 </head>
@@ -364,592 +296,361 @@
     <div class="container">
         <div class="header">
             <h1>
-                <span>📦</span>
-                입고 PDA 시스템
+                📦 입고 PDA 시스템
             </h1>
-            <p id="headerInfo">총 3개 상품 로드됨</p>
+            <p>하드웨어 스캐너 전용</p>
         </div>
         
         <div class="content">
-            <!-- 스캔 모드 선택 -->
-            <div class="card" id="scanModeCard">
-                <h3 style="margin-bottom: 15px;">스캔 모드 선택</h3>
+            <!-- 모드 선택 -->
+            <div class="card">
                 <div class="mode-selector">
-                    <div class="mode-btn active" data-mode="barcode">
-                        <span class="icon">🏷️</span>
-                        바코드 스캔
-                    </div>
-                    <div class="mode-btn" data-mode="receipt">
-                        <span class="icon">📋</span>
-                        입고번호 스캔
-                    </div>
-                </div>
-                
-                <!-- 스캐너 안내 -->
-                <div class="scanner-instructions">
-                    <span class="icon">⚡</span>
-                    <strong>PDA 스캐너 사용법:</strong> 아래 입력창을 클릭하고 PDA 스캐너로 바코드/QR코드를 스캔하세요
-                </div>
-                
-                <!-- 스캐너 영역 -->
-                <div class="scan-area" id="scanArea">
-                    <div class="status-indicator status-ready" id="statusIndicator">준비</div>
-                    <span class="scan-icon" id="scanIcon">📱</span>
-                    <div class="scan-title" id="scanTitle">바코드 스캔 준비</div>
-                    <div class="scan-subtitle" id="scanSubtitle">아래 입력창을 클릭하고 스캐너로 스캔하세요</div>
-                </div>
-                
-                <!-- 스캔 입력창 -->
-                <div class="input-group">
-                    <input type="text" id="scanInput" class="scan-input" placeholder="여기를 클릭하고 PDA 스캐너로 스캔하세요" autocomplete="off">
-                </div>
-                
-                <button class="btn btn-secondary" id="manualBtn">
-                    <span>⌨️</span>
-                    수동 입력 모드
-                </button>
-                
-                <!-- 테스트 데이터 -->
-                <div class="sample-data">
-                    <h4>
-                        <span>📝</span>
-                        테스트용 샘플 데이터
-                    </h4>
-                    <div><strong>바코드:</strong> 8809826714335</div>
-                    <div><strong>입고번호:</strong> DSIR-ES2-0811-105122-4257</div>
-                    <p style="margin-top: 10px; font-size: 12px; color: #6b7280;">위 값들을 직접 입력하거나 QR코드로 만들어서 테스트해보세요!</p>
+                    <button class="mode-btn active" onclick="setMode('barcode')">
+                        🏷️ 상품 바코드
+                    </button>
+                    <button class="mode-btn" onclick="setMode('receipt')">
+                        📋 입고번호
+                    </button>
                 </div>
             </div>
             
-            <!-- 수동 입력 -->
-            <div class="card hidden" id="manualInputCard">
-                <h3 style="margin-bottom: 15px;" id="manualTitle">바코드 수동 입력</h3>
-                <div class="input-group">
-                    <input type="text" id="manualInput" placeholder="바코드를 입력하세요">
-                </div>
-                <button class="btn btn-primary" id="searchBtn">
-                    <span>🔍</span>
-                    검색
-                </button>
-                <button class="btn btn-secondary" id="backBtn">
-                    <span>←</span>
-                    스캐너 모드로 돌아가기
-                </button>
+            <!-- 스캔 안내 -->
+            <div class="card instructions">
+                <h3>📖 스캔 방법</h3>
+                <ul>
+                    <li>PDA 스캐너로 바코드/QR 스캔</li>
+                    <li>스캔 후 자동으로 검색 실행</li>
+                    <li>결과가 나오면 수량/위치 입력</li>
+                    <li>입고 완료 처리</li>
+                </ul>
             </div>
             
-            <!-- 검색 결과 -->
-            <div class="card hidden" id="resultCard">
-                <div class="alert alert-success">
-                    <span>✅</span>
-                    스캔 완료
+            <!-- 스캔 섹션 -->
+            <div class="card">
+                <div class="scan-section">
+                    <div class="scan-status ready" id="scanStatus">
+                        📱 스캐너로 코드를 스캔하세요
+                    </div>
+                    
+                    <input type="text" 
+                           id="scanInput" 
+                           class="scan-input" 
+                           placeholder="스캐너로 스캔하거나 수동 입력..." 
+                           autofocus>
+                    
+                    <button class="btn btn-clear" onclick="clearAll()">
+                        🗑️ 초기화
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 상품 정보 -->
+            <div class="card hidden" id="productCard">
+                <h3 style="margin-bottom: 15px; color: #1f2937;">📋 상품 정보</h3>
+                <div class="product-info" id="productInfo">
+                    <!-- 상품 정보가 여기 표시됩니다 -->
                 </div>
                 
-                <div class="result-card" id="productInfo">
-                    <!-- 상품 정보가 여기에 표시됩니다 -->
+                <!-- 입고 처리 폼 -->
+                <div class="form-group">
+                    <label class="form-label">📦 실제 입고 수량</label>
+                    <input type="number" 
+                           id="actualQuantity" 
+                           class="form-input" 
+                           placeholder="입고된 수량을 입력하세요">
                 </div>
                 
-                <h4 style="margin-bottom: 15px;">
-                    <span style="margin-right: 5px;">📍</span>
-                    실제 입고 정보
-                </h4>
-                <div class="input-group">
-                    <label>실제 입고 수량</label>
-                    <input type="number" id="actualQuantity" placeholder="실제 입고된 수량을 입력하세요">
+                <div class="form-group">
+                    <label class="form-label">📍 적치 로케이션</label>
+                    <input type="text" 
+                           id="actualLocation" 
+                           class="form-input" 
+                           placeholder="예: A01-01-01-01">
                 </div>
-                <div class="input-group">
-                    <label>적치 로케이션</label>
-                    <input type="text" id="actualLocation" placeholder="적치할 위치를 입력하세요 (예: B11-402-05-0)">
-                </div>
-                <div class="input-group">
-                    <label>특이사항</label>
-                    <select id="specialNote">
+                
+                <div class="form-group">
+                    <label class="form-label">📝 특이사항</label>
+                    <select id="specialNote" class="form-select">
                         <option value="">선택하세요</option>
+                        <option value="정상">정상</option>
+                        <option value="파손">파손</option>
+                        <option value="부족">부족</option>
+                        <option value="초과">초과</option>
                         <option value="벌크">벌크</option>
-                        <option value="미검수">미검수</option>
+                        <option value="기타">기타</option>
                     </select>
                 </div>
                 
-                <button class="btn btn-success" id="completeBtn">
-                    <span>✅</span>
-                    입고 완료 처리
+                <button class="btn btn-success" onclick="completeReceiving()">
+                    ✅ 입고 완료 처리
                 </button>
-                <button class="btn btn-primary" id="newScanBtn">
-                    <span>🔄</span>
-                    새로운 스캔 시작
-                </button>
-            </div>
-            
-            <!-- 완료 상태 -->
-            <div class="card hidden" id="completeCard">
-                <div class="alert alert-success text-center">
-                    <span>🎉</span>
-                    입고가 완료되었습니다!
-                </div>
-                <button class="btn btn-primary" id="newScanBtn2">
-                    <span>🔄</span>
-                    새로운 스캔 시작
-                </button>
-            </div>
-            
-            <!-- 오류 메시지 -->
-            <div class="alert alert-error hidden" id="errorAlert">
-                <span>⚠️</span>
-                <span id="errorMessage"></span>
             </div>
         </div>
     </div>
 
     <script>
-        // 샘플 데이터
-        const sampleData = [
-            {
-                "입고번호": "DSIR-ES2-0811-105122-4257",
-                "고객사": "정샘물뷰티",
-                "품명": "아티스트드로잉립펜슬#오버브라운",
-                "바코드": "8809826714335",
-                "수량": "720",
-                "소비기한": "2026-12-18",
-                "제조로트": "F19X001",
-                "PLT.NO": "250818-1",
-                "특이사항": "",
-                "적치 로케이션": ""
-            },
-            {
-                "입고번호": "DSIR-ES2-0811-105122-4257",
-                "고객사": "정샘물뷰티",
-                "품명": "에센셜스킨누더쿠션#페어라이트",
-                "바코드": "8809467632272",
-                "수량": "240",
-                "소비기한": "2028-06-10",
-                "제조로트": "NEA",
-                "PLT.NO": "250818-2",
-                "특이사항": "",
-                "적치 로케이션": "B11-402-05-0"
-            },
-            {
-                "입고번호": "DSIR-ES2-0811-105122-4257",
-                "고객사": "정샘물뷰티",
-                "품명": "에센셜스킨누더쿠션#핑크라이트",
-                "바코드": "8809467634559",
-                "수량": "80",
-                "소비기한": "2028-05-22",
-                "제조로트": "BDA",
-                "PLT.NO": "250818-3",
-                "특이사항": "",
-                "적치 로케이션": "B07-406-21-0"
-            }
-        ];
+        // 구글 시트 API URL
+        const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyk80Iw69UC1eT50IYTr8xi4v6owuzu1ezYKHtyqL82QCkZ0c_O1jFh5H38ABCG-Dc_dQ/exec';
         
-        // ⭐ 구글 시트 연동 URL (업데이트된 URL)
-       const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyk80Iw69UC1eT50IYTr8xi4v6owuzu1ezYKHtyqL82QCkZ0c_O1jFh5H38ABCG-Dc_dQ/exec';
-        
-        // 전역 변수
-        let currentMode = 'barcode';
-        let currentResult = null;
-        let scanTimeout = null;
+        let currentMode = 'barcode'; // 'barcode' 또는 'receipt'
+        let currentItem = null;
         
         // DOM 요소들
-        const elements = {
-            scanModeCard: document.getElementById('scanModeCard'),
-            manualInputCard: document.getElementById('manualInputCard'),
-            resultCard: document.getElementById('resultCard'),
-            completeCard: document.getElementById('completeCard'),
-            errorAlert: document.getElementById('errorAlert'),
-            scanArea: document.getElementById('scanArea'),
-            scanIcon: document.getElementById('scanIcon'),
-            scanTitle: document.getElementById('scanTitle'),
-            scanSubtitle: document.getElementById('scanSubtitle'),
-            statusIndicator: document.getElementById('statusIndicator'),
-            scanInput: document.getElementById('scanInput'),
-            manualTitle: document.getElementById('manualTitle'),
-            manualInput: document.getElementById('manualInput'),
-            productInfo: document.getElementById('productInfo'),
-            actualQuantity: document.getElementById('actualQuantity'),
-            actualLocation: document.getElementById('actualLocation'),
-            specialNote: document.getElementById('specialNote'),
-            errorMessage: document.getElementById('errorMessage')
-        };
+        const scanInput = document.getElementById('scanInput');
+        const scanStatus = document.getElementById('scanStatus');
+        const productCard = document.getElementById('productCard');
+        const productInfo = document.getElementById('productInfo');
         
-        // 초기화
-        function init() {
-            setupEventListeners();
-            selectMode('barcode');
-            focusScanInput();
-        }
+        // 페이지 로드시 입력 필드에 포커스
+        document.addEventListener('DOMContentLoaded', function() {
+            scanInput.focus();
+        });
         
-        // 이벤트 리스너 설정
-        function setupEventListeners() {
-            // 모드 선택 버튼들
-            document.querySelectorAll('.mode-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    selectMode(this.dataset.mode);
-                });
-            });
-            
-            // 스캔 입력창 이벤트
-            elements.scanInput.addEventListener('focus', function() {
-                setScanningState(true);
-            });
-            
-            elements.scanInput.addEventListener('blur', function() {
-                setScanningState(false);
-            });
-            
-            // 스캔 입력 처리 (PDA 스캐너는 보통 Enter로 끝남)
-            elements.scanInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    processScanInput();
-                }
-            });
-            
-            // 실시간 입력 감지 (일부 스캐너는 Enter 없이 입력)
-            elements.scanInput.addEventListener('input', function() {
-                clearTimeout(scanTimeout);
-                scanTimeout = setTimeout(() => {
-                    if (this.value.length >= 8) { // 최소 8자리 이상일 때 자동 처리
-                        processScanInput();
-                    }
-                }, 500); // 0.5초 후 자동 처리
-            });
-            
-            // 각종 버튼들
-            document.getElementById('manualBtn').addEventListener('click', showManualInput);
-            document.getElementById('searchBtn').addEventListener('click', searchItem);
-            document.getElementById('backBtn').addEventListener('click', backToScan);
-            document.getElementById('completeBtn').addEventListener('click', completeProcess);
-            document.getElementById('newScanBtn').addEventListener('click', startNewScan);
-            document.getElementById('newScanBtn2').addEventListener('click', startNewScan);
-            
-            // 수동 입력 Enter 키
-            elements.manualInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    searchItem();
-                }
-            });
-        }
-        
-        // 모드 선택
-        function selectMode(mode) {
+        // 모드 변경
+        function setMode(mode) {
             currentMode = mode;
             
-            // 버튼 스타일 업데이트
+            // 버튼 상태 업데이트
             document.querySelectorAll('.mode-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
-            document.querySelector(`[data-mode="${mode}"]`).classList.add('active');
+            event.target.classList.add('active');
             
-            // UI 업데이트
-            updateScanUI();
-            focusScanInput();
-        }
-        
-        // 스캔 UI 업데이트
-        function updateScanUI() {
-            const isBarcode = currentMode === 'barcode';
-            const title = isBarcode ? '바코드 스캔 준비' : '입고번호 스캔 준비';
-            const subtitle = isBarcode ? 'PDA 스캐너로 바코드를 스캔하세요' : 'PDA 스캐너로 입고번호 QR코드를 스캔하세요';
-            const placeholder = isBarcode ? 'PDA 스캐너로 바코드를 스캔하세요' : 'PDA 스캐너로 입고번호를 스캔하세요';
-            
-            elements.scanTitle.textContent = title;
-            elements.scanSubtitle.textContent = subtitle;
-            elements.scanInput.placeholder = placeholder;
-            elements.manualTitle.textContent = `${isBarcode ? '바코드' : '입고번호'} 수동 입력`;
-            elements.manualInput.placeholder = `${isBarcode ? '바코드' : '입고번호'}를 입력하세요`;
-        }
-        
-        // 스캐닝 상태 설정
-        function setScanningState(isScanning) {
-            if (isScanning) {
-                elements.scanArea.classList.add('scanning');
-                elements.scanIcon.textContent = '🔴';
-                elements.scanTitle.textContent = '스캔 중...';
-                elements.scanSubtitle.textContent = 'PDA 스캐너로 스캔하세요';
-                elements.statusIndicator.textContent = '스캔중';
-                elements.statusIndicator.className = 'status-indicator status-scanning';
+            // 상태 업데이트
+            if (mode === 'barcode') {
+                updateScanStatus('📱 상품 바코드를 스캔하세요', 'ready');
+                scanInput.placeholder = '상품 바코드 스캔...';
             } else {
-                elements.scanArea.classList.remove('scanning');
-                elements.scanIcon.textContent = '📱';
-                updateScanUI();
-                elements.statusIndicator.textContent = '준비';
-                elements.statusIndicator.className = 'status-indicator status-ready';
+                updateScanStatus('📱 입고번호 QR코드를 스캔하세요', 'ready');
+                scanInput.placeholder = '입고번호 QR코드 스캔...';
             }
+            
+            // 초기화
+            clearAll();
+            scanInput.focus();
         }
         
         // 스캔 입력 처리
-        function processScanInput() {
-            const scanValue = elements.scanInput.value.trim();
+        scanInput.addEventListener('input', function(e) {
+            const value = e.target.value.trim();
             
-            if (!scanValue) {
-                showError('스캔된 데이터가 없습니다.');
+            if (value.length > 0) {
+                updateScanStatus('📤 입력 중...', 'scanning');
+            }
+        });
+        
+        // 엔터키 또는 일정 길이 입력시 자동 검색
+        scanInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                handleScan();
+            }
+        });
+        
+        // PDA 스캐너는 보통 빠르게 입력하고 끝나므로, 입력이 멈춘 후 자동 검색
+        let inputTimer;
+        scanInput.addEventListener('input', function(e) {
+            clearTimeout(inputTimer);
+            const value = e.target.value.trim();
+            
+            if (value.length >= 5) { // 최소 5자리 이상
+                inputTimer = setTimeout(() => {
+                    handleScan();
+                }, 500); // 0.5초 후 자동 검색
+            }
+        });
+        
+        // 스캔 처리
+        function handleScan() {
+            const scannedValue = scanInput.value.trim();
+            
+            if (!scannedValue) {
+                updateScanStatus('❌ 스캔된 데이터가 없습니다', 'error');
                 return;
             }
             
-            // 스캔 성공 효과
-            setScanningState(false);
-            elements.scanInput.value = '';
+            updateScanStatus('🔍 검색 중...', 'scanning');
             
-            // 검색 실행
-            searchByValue(scanValue);
-        }
-        
-        // 값으로 검색
-        function searchByValue(searchValue) {
-            const searchKey = currentMode === 'barcode' ? '바코드' : '입고번호';
-            const result = sampleData.find(item => 
-                item[searchKey].toString() === searchValue.toString()
-            );
-            
-            if (result) {
-                currentResult = result;
-                showResult(result);
+            if (currentMode === 'barcode') {
+                searchByBarcode(scannedValue);
             } else {
-                showError(`${currentMode === 'barcode' ? '바코드' : '입고번호'}를 찾을 수 없습니다: ${searchValue}`);
-                focusScanInput();
+                searchByReceiptNumber(scannedValue);
             }
         }
         
-        // 스캔 입력창에 포커스
-        function focusScanInput() {
-            setTimeout(() => {
-                elements.scanInput.focus();
-            }, 100);
-        }
-        
-        // 수동 입력 화면 표시
-        function showManualInput() {
-            hideAllCards();
-            elements.manualInputCard.classList.remove('hidden');
-            elements.manualInput.focus();
-        }
-        
-        // 스캔 화면으로 돌아가기
-        function backToScan() {
-            hideAllCards();
-            elements.scanModeCard.classList.remove('hidden');
-            elements.manualInput.value = '';
-            elements.scanInput.value = '';
-            hideError();
-            focusScanInput();
-        }
-        
-        // 수동 검색
-        function searchItem() {
-            const searchValue = elements.manualInput.value.trim();
-            
-            if (!searchValue) {
-                showError('검색값을 입력해주세요.');
-                return;
+        // 바코드로 검색
+        async function searchByBarcode(barcode) {
+            try {
+                const response = await fetch(`${WEB_APP_URL}?action=searchByBarcode&barcode=${encodeURIComponent(barcode)}`);
+                const data = await response.json();
+                
+                if (data.success && data.data) {
+                    currentItem = data.data;
+                    displayProductInfo(data.data);
+                    updateScanStatus('✅ 상품을 찾았습니다!', 'success');
+                } else {
+                    updateScanStatus('❌ 해당 바코드의 상품을 찾을 수 없습니다', 'error');
+                    productCard.classList.add('hidden');
+                }
+            } catch (error) {
+                console.error('검색 오류:', error);
+                updateScanStatus('❌ 검색 중 오류가 발생했습니다', 'error');
+                productCard.classList.add('hidden');
             }
-            
-            searchByValue(searchValue);
         }
         
-        // 검색 결과 표시
-        function showResult(item) {
-            hideAllCards();
-            elements.resultCard.classList.remove('hidden');
-            
-            elements.productInfo.innerHTML = `
-                <div class="result-item">
-                    <span class="result-label">입고번호:</span>
-                    <span class="result-value">${item['입고번호'] || '-'}</span>
+        // 입고번호로 검색
+        async function searchByReceiptNumber(receiptNumber) {
+            try {
+                const response = await fetch(`${WEB_APP_URL}?action=searchByReceiptNumber&receiptNumber=${encodeURIComponent(receiptNumber)}`);
+                const data = await response.json();
+                
+                if (data.success && data.data && data.data.length > 0) {
+                    // 여러 상품이 있을 수 있으므로 첫 번째 상품 표시
+                    currentItem = data.data[0];
+                    displayProductInfo(data.data[0]);
+                    updateScanStatus(`✅ 입고번호에서 ${data.data.length}개 상품을 찾았습니다!`, 'success');
+                } else {
+                    updateScanStatus('❌ 해당 입고번호를 찾을 수 없습니다', 'error');
+                    productCard.classList.add('hidden');
+                }
+            } catch (error) {
+                console.error('검색 오류:', error);
+                updateScanStatus('❌ 검색 중 오류가 발생했습니다', 'error');
+                productCard.classList.add('hidden');
+            }
+        }
+        
+        // 상품 정보 표시
+        function displayProductInfo(item) {
+            const info = `
+                <div class="product-row">
+                    <span class="product-label">입고번호:</span>
+                    <span class="product-value">${item.receiptNumber || '-'}</span>
                 </div>
-                <div class="result-item">
-                    <span class="result-label">고객사:</span>
-                    <span class="result-value">${item['고객사'] || '-'}</span>
+                <div class="product-row">
+                    <span class="product-label">상품명:</span>
+                    <span class="product-value">${item.productName || '-'}</span>
                 </div>
-                <div class="result-item">
-                    <span class="result-label">품명:</span>
-                    <span class="result-value">${item['품명'] || '-'}</span>
+                <div class="product-row">
+                    <span class="product-label">바코드:</span>
+                    <span class="product-value">${item.barcode || '-'}</span>
                 </div>
-                <div class="result-item">
-                    <span class="result-label">바코드:</span>
-                    <span class="result-value">${item['바코드'] || '-'}</span>
+                <div class="product-row">
+                    <span class="product-label">예정수량:</span>
+                    <span class="product-value">${item.plannedQuantity || '0'}개</span>
                 </div>
-                <div class="result-item">
-                    <span class="result-label">예정수량:</span>
-                    <span class="result-value" style="color: #2563eb; font-weight: 600;">${item['수량'] || '0'}개</span>
+                <div class="product-row">
+                    <span class="product-label">단위:</span>
+                    <span class="product-value">${item.unit || '-'}</span>
                 </div>
-                <div class="result-item">
-                    <span class="result-label">소비기한:</span>
-                    <span class="result-value">${item['소비기한'] || '-'}</span>
-                </div>
-                <div class="result-item">
-                    <span class="result-label">제조로트:</span>
-                    <span class="result-value">${item['제조로트'] || '-'}</span>
-                </div>
-                <div class="result-item">
-                    <span class="result-label">PLT.NO:</span>
-                    <span class="result-value">${item['PLT.NO'] || '-'}</span>
-                </div>
-                <div class="result-item">
-                    <span class="result-label">특이사항:</span>
-                    <span class="result-value">${item['특이사항'] || '-'}</span>
-                </div>
-                <div class="result-item">
-                    <span class="result-label">적치 로케이션:</span>
-                    <span class="result-value">${item['적치 로케이션'] || '-'}</span>
+                <div class="product-row">
+                    <span class="product-label">상태:</span>
+                    <span class="product-value">${item.status || '대기'}</span>
                 </div>
             `;
             
-            // 기본값 설정
-            elements.actualQuantity.value = item['수량'];
-            elements.actualLocation.value = item['적치 로케이션'] || '';
+            productInfo.innerHTML = info;
+            productCard.classList.remove('hidden');
             
-            hideError();
-            
-            // 결과 카드가 표시된 후 스크롤을 맨 위로
-            setTimeout(() => {
-                window.scrollTo(0, 0);
-                elements.resultCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }, 100);
+            // 수량 필드에 예정 수량 미리 입력
+            if (item.plannedQuantity) {
+                document.getElementById('actualQuantity').value = item.plannedQuantity;
+            }
         }
         
         // 입고 완료 처리
-        function completeProcess() {
-            const actualQuantity = elements.actualQuantity.value;
-            const actualLocation = elements.actualLocation.value;
-            const specialNote = elements.specialNote.value;
+        async function completeReceiving() {
+            if (!currentItem) {
+                alert('처리할 상품이 없습니다.');
+                return;
+            }
             
-            // 구글 시트에 데이터 전송
-            updateGoogleSheet(currentResult, actualQuantity, actualLocation, specialNote);
+            const actualQuantity = document.getElementById('actualQuantity').value;
+            const actualLocation = document.getElementById('actualLocation').value;
+            const specialNote = document.getElementById('specialNote').value;
             
-            console.log('입고 완료:', {
-                item: currentResult,
-                actualQuantity: actualQuantity,
-                actualLocation: actualLocation,
-                specialNote: specialNote,
-                timestamp: new Date().toISOString()
-            });
+            if (!actualQuantity) {
+                alert('실제 입고 수량을 입력해주세요.');
+                return;
+            }
             
-            hideAllCards();
-            elements.completeCard.classList.remove('hidden');
-        }
-        
-        // 구글 시트 업데이트 함수
-        function updateGoogleSheet(item, actualQuantity, actualLocation, specialNote) {
-            const data = {
-                searchType: currentMode, // 'barcode' 또는 'receipt'
-                searchValue: currentMode === 'barcode' ? item['바코드'] : item['입고번호'],
-                actualQuantity: actualQuantity,
-                actualLocation: actualLocation,
-                specialNote: specialNote
-            };
+            if (!actualLocation) {
+                alert('적치 로케이션을 입력해주세요.');
+                return;
+            }
             
-            showNotification('구글 시트에 저장 중...', 'success');
-            
-            // 구글 시트에 데이터 전송
-            fetch(WEB_APP_URL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data)
-            })
-            .then(response => response.json())
-            .then(result => {
-                if (result.success) {
-                    console.log('구글 시트 업데이트 성공:', result);
-                    showNotification('구글 시트에 데이터가 저장되었습니다! 🎉', 'success');
+            try {
+                updateScanStatus('💾 입고 처리 중...', 'scanning');
+                
+                const payload = {
+                    action: 'completeReceiving',
+                    item: currentItem,
+                    actualQuantity: actualQuantity,
+                    actualLocation: actualLocation,
+                    specialNote: specialNote
+                };
+                
+                console.log('전송할 데이터:', payload);
+                
+                const response = await fetch(WEB_APP_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    updateScanStatus('✅ 입고 처리가 완료되었습니다!', 'success');
+                    
+                    // 성공 알림
+                    alert(`입고 완료!\n상품: ${currentItem.productName}\n수량: ${actualQuantity}개\n위치: ${actualLocation}`);
+                    
+                    // 폼 초기화
+                    setTimeout(() => {
+                        clearAll();
+                    }, 2000);
                 } else {
-                    console.error('구글 시트 업데이트 실패:', result);
-                    showNotification('구글 시트 저장 실패: ' + result.message, 'error');
+                    updateScanStatus('❌ 입고 처리 실패: ' + (data.message || '알 수 없는 오류'), 'error');
                 }
-            })
-            .catch(error => {
-                console.error('연결 오류:', error);
-                showNotification('구글 시트 연결 실패. 네트워크를 확인해주세요.', 'error');
-            });
-        }
-        
-        // 알림 메시지 표시
-        function showNotification(message, type = 'success') {
-            // 기존 알림 제거
-            const existingNotification = document.querySelector('.notification');
-            if (existingNotification) {
-                existingNotification.remove();
+                
+            } catch (error) {
+                console.error('입고 처리 오류:', error);
+                updateScanStatus('❌ 구글 시트 연결 실패', 'error');
             }
-            
-            // 새 알림 생성
-            const notification = document.createElement('div');
-            notification.className = `notification ${type}`;
-            notification.innerHTML = `
-                <span>${type === 'success' ? '✅' : '⚠️'}</span>
-                <span>${message}</span>
-            `;
-            
-            document.body.appendChild(notification);
-            
-            // 3초 후 자동 제거
-            setTimeout(() => {
-                if (notification.parentNode) {
-                    notification.remove();
-                }
-            }, 3000);
         }
         
-        // 새로운 스캔 시작
-        function startNewScan() {
-            currentResult = null;
-            hideAllCards();
-            elements.scanModeCard.classList.remove('hidden');
-            elements.manualInput.value = '';
-            elements.scanInput.value = '';
-            elements.actualQuantity.value = '';
-            elements.actualLocation.value = '';
-            elements.specialNote.value = '';
-            hideError();
-            focusScanInput();
+        // 상태 업데이트
+        function updateScanStatus(message, type) {
+            scanStatus.textContent = message;
+            scanStatus.className = `scan-status ${type}`;
         }
         
-        // 모든 카드 숨기기
-        function hideAllCards() {
-            const cards = [
-                elements.scanModeCard,
-                elements.manualInputCard,
-                elements.resultCard,
-                elements.completeCard
-            ];
+        // 초기화
+        function clearAll() {
+            scanInput.value = '';
+            scanInput.focus();
+            currentItem = null;
+            productCard.classList.add('hidden');
+            document.getElementById('actualQuantity').value = '';
+            document.getElementById('actualLocation').value = '';
+            document.getElementById('specialNote').value = '';
             
-            cards.forEach(card => {
-                if (card) card.classList.add('hidden');
-            });
-        }
-        
-        // 오류 메시지 표시
-        function showError(message) {
-            elements.errorMessage.textContent = message;
-            elements.errorAlert.classList.remove('hidden');
-            
-            setTimeout(() => {
-                hideError();
-            }, 5000);
-        }
-        
-        // 오류 메시지 숨기기
-        function hideError() {
-            elements.errorAlert.classList.add('hidden');
-        }
-        
-        // 페이지 로드 시 초기화
-        document.addEventListener('DOMContentLoaded', init);
-        
-        // 페이지가 보일 때마다 스캔 입력창에 포커스
-        document.addEventListener('visibilitychange', function() {
-            if (!document.hidden && !elements.scanModeCard.classList.contains('hidden')) {
-                focusScanInput();
+            if (currentMode === 'barcode') {
+                updateScanStatus('📱 상품 바코드를 스캔하세요', 'ready');
+            } else {
+                updateScanStatus('📱 입고번호 QR코드를 스캔하세요', 'ready');
             }
-        });
+        }
         
-        // 윈도우 포커스 시 스캔 입력창에 포커스
-        window.addEventListener('focus', function() {
-            if (!elements.scanModeCard.classList.contains('hidden')) {
-                focusScanInput();
+        // 입력 필드 포커스 유지
+        setInterval(() => {
+            if (document.activeElement !== scanInput) {
+                scanInput.focus();
             }
-        });
+        }, 1000);
     </script>
 </body>
 </html>
-
-

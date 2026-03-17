@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>라벨 출력</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Roboto', 'Noto Sans KR', sans-serif;
+      background: #f0f2f5;
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .wrapper {
+      width: 100%;
+      max-width: 500px;
+    }
+
+    .header {
+      background: linear-gradient(45deg, #ff6b35, #f7931e);
+      color: white;
+      padding: 30px 20px;
+      border-radius: 20px 20px 0 0;
+      text-align: center;
+    }
+
+    .header h1 { font-size: 40px; font-weight: 800; }
+    .header p  { font-size: 26px; opacity: 0.9; margin-top: 8px; }
+
+    .card {
+      background: white;
+      border-radius: 0 0 20px 20px;
+      padding: 30px 20px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+    }
+
+    /* ── 라벨 미리보기 ── */
+    .label-preview {
+      width: 100%;
+      max-width: 360px;
+      aspect-ratio: 1 / 1;
+      background: white;
+      border: 3px solid #333;
+      border-radius: 12px;
+      padding: 18px;
+      margin: 0 auto 24px auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    }
+
+    .label-top {
+      width: 100%;
+      text-align: center;
+      border-bottom: 2px solid #eee;
+      padding-bottom: 10px;
+    }
+
+    .label-customer { font-size: 22px; font-weight: 900; color: #333; }
+    .label-name     { font-size: 17px; color: #555; margin-top: 4px; }
+
+    #qrArea {
+      width: 160px; height: 160px;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .label-bottom {
+      width: 100%;
+      text-align: center;
+      border-top: 2px solid #eee;
+      padding-top: 10px;
+    }
+
+    .label-pltno   { font-size: 28px; font-weight: 900; color: #1a1a1a; }
+    .label-barcode { font-size: 16px; color: #666; margin-top: 4px; }
+    .label-qty     { font-size: 16px; color: #666; }
+
+    /* ── 버튼 ── */
+    .btn {
+      width: 100%;
+      padding: 36px 20px;
+      border: none;
+      border-radius: 16px;
+      font-size: 36px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      color: white;
+      margin-bottom: 16px;
+      min-height: 100px;
+      transition: all 0.2s;
+    }
+
+    .btn:disabled { background: #aaa !important; cursor: not-allowed; }
+
+    .btn-print  { background: linear-gradient(45deg, #ff6b35, #f7931e); }
+    .btn-close  { background: #6c757d; }
+
+    /* ── 상태 박스 ── */
+    .status-box {
+      padding: 20px;
+      border-radius: 12px;
+      text-align: center;
+      font-size: 28px;
+      font-weight: 700;
+      border: 3px solid #dee2e6;
+      background: #f8f9fa;
+      color: #6c757d;
+      margin-bottom: 16px;
+    }
+
+    .status-box.connected {
+      background: #d4edda;
+      border-color: #28a745;
+      color: #155724;
+    }
+
+    .status-box.error {
+      background: #f8d7da;
+      border-color: #dc3545;
+      color: #721c24;
+    }
+
+    /* ── 로딩 ── */
+    #loadingMsg {
+      text-align: center;
+      padding: 40px;
+      font-size: 32px;
+      color: #6c757d;
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 60px; height: 60px;
+      border: 8px solid #f3f3f3;
+      border-top: 8px solid #ff6b35;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 16px;
+    }
+
+    @keyframes spin {
+      0%   { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* ── 안내 텍스트 ── */
+    .note {
+      font-size: 24px;
+      color: #888;
+      text-align: center;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+<div class="wrapper">
+  <div class="header">
+    <h1>🖨️ 라벨 출력</h1>
+    <p>Sewoo LK-P30IIB</p>
+  </div>
+
+  <div class="card">
+    <div id="loadingMsg">
+      <div class="spinner"></div><br>QR 코드 생성 중...
+    </div>
+
+    <div id="mainContent" style="display:none;">
+      <!-- 라벨 미리보기 -->
+      <div class="label-preview">
+        <div class="label-top">
+          <div class="label-customer" id="lblCustomer">-</div>
+          <div class="label-name"     id="lblName">-</div>
+        </div>
+        <div id="qrArea"><span style="color:#aaa;font-size:13px;">QR 생성 중...</span></div>
+        <div class="label-bottom">
+          <div class="label-pltno"   id="lblPltno">-</div>
+          <div class="label-barcode" id="lblBarcode">-</div>
+          <div class="label-qty"     id="lblQty">-</div>
+        </div>
+      </div>
+
+      <!-- 상태 -->
+      <div class="status-box" id="statusBox">🔵 프린터 미연결 상태</div>
+
+      <!-- 버튼 -->
+      <button class="btn btn-print" id="printBtn" onclick="executePrint()">
+        <span>🖨️</span> 프린터 연결 후 출력
+      </button>
+      <button class="btn btn-close" onclick="window.close()">
+        <span>❌</span> 닫기
+      </button>
+
+      <p class="note">최초 1회 프린터 선택 후<br>다음부터 자동 연결됩니다</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── BLE UUID (Sewoo LK-P30IIB) ──
+  const BLE_SERVICE_UUID = '0000ffb0-d102-11e1-9b23-00025b00a5a5';
+  const BLE_WRITE_UUID   = '0000ffb2-d102-11e1-9b23-00025b00a5a5';
+
+  let bleDevice = null;
+  let bleChar   = null;
+
+  // ── URL 파라미터 파싱 ──
+  const params  = new URLSearchParams(location.search);
+  const pltno   = params.get('pltno')    || '';
+  const barcode = params.get('barcode')  || '';
+  const name    = params.get('name')     || '';
+  const customer= params.get('customer') || '';
+  const qty     = params.get('qty')      || '';
+
+  // ── QR 라이브러리 로드 후 초기화 ──
+  window.onload = function() {
+    var s = document.createElement('script');
+    s.src = 'https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js';
+    s.onload = init;
+    s.onerror = function() {
+      document.getElementById('loadingMsg').innerHTML =
+        '❌ QR 라이브러리 로드 실패.<br>네트워크를 확인하세요.';
+    };
+    document.head.appendChild(s);
+  };
+
+  function init() {
+    // 텍스트 채우기
+    document.getElementById('lblCustomer').textContent = customer || '-';
+    document.getElementById('lblName').textContent     = name     || '-';
+    document.getElementById('lblPltno').textContent    = pltno    || '-';
+    document.getElementById('lblBarcode').textContent  = barcode  || '-';
+    document.getElementById('lblQty').textContent      = qty ? qty + 'EA' : '-';
+
+    // QR 생성
+    var area = document.getElementById('qrArea');
+    area.innerHTML = '';
+    var canvas = document.createElement('canvas');
+    area.appendChild(canvas);
+
+    var qrText = pltno || barcode || 'NO_DATA';
+    QRCode.toCanvas(canvas, qrText, {
+      width: 160, margin: 1,
+      color: { dark: '#000000', light: '#ffffff' }
+    }, function(err) {
+      if (err) area.innerHTML = '<span style="color:red;font-size:12px;">QR 실패</span>';
+    });
+
+    document.getElementById('loadingMsg').style.display  = 'none';
+    document.getElementById('mainContent').style.display = 'block';
+  }
+
+  // ── 상태 박스 업데이트 ──
+  function setStatus(type, msg) {
+    var box = document.getElementById('statusBox');
+    box.className = 'status-box' + (type ? ' ' + type : '');
+    box.textContent = msg;
+  }
+
+  // ── 출력 실행 ──
+  async function executePrint() {
+    if (!pltno) { alert('PLT.NO 정보가 없습니다.'); return; }
+
+    var btn = document.getElementById('printBtn');
+
+    try {
+      // 1. 기존 연결 재사용 시도
+      if (bleDevice && bleDevice.gatt) {
+        if (!bleDevice.gatt.connected) {
+          btn.disabled = true;
+          btn.innerHTML = '<span>⏳</span> 재연결 중...';
+          try {
+            await bleDevice.gatt.connect();
+            var svc = await bleDevice.gatt.getPrimaryService(BLE_SERVICE_UUID);
+            bleChar = await svc.getCharacteristic(BLE_WRITE_UUID);
+            setStatus('connected', '🟢 연결됨: ' + bleDevice.name);
+          } catch(e) {
+            bleDevice = null; bleChar = null;
+          }
+        }
+      }
+
+      // 2. 이전에 허용한 기기 자동 연결
+      if (!bleChar && navigator.bluetooth.getDevices) {
+        var devices = await navigator.bluetooth.getDevices();
+        for (var d of devices) {
+          try {
+            btn.disabled = true;
+            btn.innerHTML = '<span>⏳</span> 자동 연결 중...';
+            await d.gatt.connect();
+            var svc2 = await d.gatt.getPrimaryService(BLE_SERVICE_UUID);
+            bleChar = await svc2.getCharacteristic(BLE_WRITE_UUID);
+            bleDevice = d;
+            break;
+          } catch(e) { /* skip */ }
+        }
+      }
+
+      // 3. 수동 선택 (최초 1회)
+      if (!bleChar) {
+        btn.disabled = true;
+        btn.innerHTML = '<span>🔍</span> 프린터 선택 중...';
+        bleDevice = await navigator.bluetooth.requestDevice({
+          filters: [{ services: [BLE_SERVICE_UUID] }]
+        });
+        btn.innerHTML = '<span>⏳</span> 연결 중...';
+        await bleDevice.gatt.connect();
+        var svc3 = await bleDevice.gatt.getPrimaryService(BLE_SERVICE_UUID);
+        bleChar = await svc3.getCharacteristic(BLE_WRITE_UUID);
+        bleDevice.addEventListener('gattserverdisconnected', function() {
+          bleChar = null;
+          setStatus('', '🔵 연결 끊김 — 다시 출력 버튼을 누르세요');
+          btn.disabled = false;
+          btn.innerHTML = '<span>🖨️</span> 다시 출력';
+        });
+      }
+
+      setStatus('connected', '🟢 연결됨: ' + (bleDevice.name || '프린터'));
+      btn.innerHTML = '<span>⏳</span> 출력 중...';
+
+      await sendLabel();
+
+      btn.disabled = false;
+      btn.innerHTML = '<span>✅</span> 출력 완료!';
+      setStatus('connected', '✅ 출력 완료! ' + (bleDevice.name || ''));
+      setTimeout(function() {
+        btn.innerHTML = '<span>🖨️</span> 다시 출력';
+      }, 3000);
+
+    } catch(err) {
+      bleDevice = null; bleChar = null;
+      setStatus('error', '❌ 오류: ' + err.message);
+      btn.disabled = false;
+      btn.innerHTML = '<span>🖨️</span> 프린터 연결 후 출력';
+      if (err.name !== 'NotFoundError') {
+        alert('❌ ' + err.message);
+      }
+    }
+  }
+
+  // ── ESC/POS 데이터 전송 ──
+  async function sendLabel() {
+    var cmds = [];
+    var enc  = new TextEncoder();
+
+    function bytes(arr) { cmds.push(new Uint8Array(arr)); }
+    function text(str)  { cmds.push(enc.encode(str)); }
+
+    // 초기화
+    bytes([0x1B, 0x40]);
+    // 중앙 정렬
+    bytes([0x1B, 0x61, 0x01]);
+
+    // 고객사 (더블 높이)
+    bytes([0x1B, 0x21, 0x10]);
+    text((customer || '') + '\n');
+
+    // 품명 (표준)
+    bytes([0x1B, 0x21, 0x00]);
+    text((name || '') + '\n');
+
+    text('--------------------------------\n');
+
+    // QR 코드 (PLT.NO)
+    var qrData = enc.encode(pltno);
+    var qrPayloadLen = qrData.length + 3;
+    var pL = qrPayloadLen & 0xFF;
+    var pH = (qrPayloadLen >> 8) & 0xFF;
+
+    bytes([0x1D, 0x28, 0x6B, 0x04, 0x00, 0x31, 0x41, 0x32, 0x00]); // 모델 설정
+    bytes([0x1D, 0x28, 0x6B, 0x03, 0x00, 0x31, 0x45, 0x33]);        // 오류 수정 레벨 M
+    bytes([0x1D, 0x28, 0x6B, 0x03, 0x00, 0x31, 0x43, 0x08]);        // 셀 크기 8
+    bytes([0x1D, 0x28, 0x6B, pL,   pH,   0x31, 0x50, 0x30]);        // 데이터 저장
+    cmds.push(qrData);
+    bytes([0x1D, 0x28, 0x6B, 0x03, 0x00, 0x31, 0x51, 0x30]);        // 출력
+
+    text('--------------------------------\n');
+
+    // PLT.NO (더블 높이+너비 + 볼드)
+    bytes([0x1B, 0x21, 0x30]);
+    bytes([0x1B, 0x45, 0x01]);
+    text(pltno + '\n');
+    bytes([0x1B, 0x45, 0x00]);
+
+    // 바코드 숫자 + 수량
+    bytes([0x1B, 0x21, 0x00]);
+    text((barcode || '') + '\n');
+    text('\xbc\xf3\xb7\xc9: ' + (qty || '-') + 'EA\n');  // 수량 (EUC-KR 근사)
+
+    // 용지 피드 + 커터
+    text('\n\n\n');
+    bytes([0x1D, 0x56, 0x42, 0x00]);
+
+    // 전체 합치기
+    var total = cmds.reduce(function(s, c) { return s + c.length; }, 0);
+    var buf   = new Uint8Array(total);
+    var off   = 0;
+    cmds.forEach(function(c) { buf.set(c, off); off += c.length; });
+
+    // 512바이트 청크로 전송
+    var CHUNK = 512;
+    for (var i = 0; i < buf.length; i += CHUNK) {
+      await bleChar.writeValueWithoutResponse(buf.slice(i, i + CHUNK));
+      await new Promise(function(r) { setTimeout(r, 50); });
+    }
+  }
+</script>
+</body>
+</html>
